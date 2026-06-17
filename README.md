@@ -1,40 +1,24 @@
-# architecture-governance
+<h1 align="center">architecture-governance</h1>
 
-> AI Architecture Governance skills for Antigravity (and any compatible agent).
+<p align="center">
+  <strong>Architectural governance skills for AI agents</strong><br/>
+  TOGAF-mapped documentation · Deterministic compliance verification · CWE/OWASP-cited code audits
+</p>
 
-Three skills covering the full project lifecycle — from pre-project documentation gates through live compliance verification and security auditing.
+<p align="center">
+  <img src="https://img.shields.io/badge/skills-3-6366f1?style=flat-square" />
+  <img src="https://img.shields.io/badge/modes-9-0ea5e9?style=flat-square" />
+  <img src="https://img.shields.io/badge/agents-Antigravity%20%7C%20Codex%20%7C%20Gemini%20CLI-22c55e?style=flat-square" />
+  <img src="https://img.shields.io/badge/license-MIT-f59e0b?style=flat-square" />
+</p>
 
-## Skills
+---
 
-### `governance` — Master lifecycle skill (5 modes)
+## The Problem
 
-| Mode | Trigger | What it does |
-|------|---------|-------------|
-| `scaffold` | "set up the project", "init .ai-arch/" | Initialize `.ai-arch/` structure from TOGAF ADM Preliminary + Phase A |
-| `adr` | "write an ADR", any tech choice | Architecture Decision Records with mandatory rejected alternatives |
-| `verify` | "verify compliance", "check governance" | Deterministic gate checker (`--fast` existence-only / `--deep` content check) |
-| `diagram` | "draw [type]" | Mermaid diagrams: context, container, sequence, deployment, state, ERD, dataflow |
-| `audit` | "audit this", "audit <path>" | 5-pillar code audit with CWE/OWASP citations and weighted scoring |
+Most AI-augmented projects start with code. Architecture decisions get made implicitly, never recorded. Security findings have no consistent severity language. There is no way to tell, weeks later, whether governance was applied or just assumed.
 
-**Audit scoring formula (fixed, v1.0 — audits are comparable over time):**
-- Security 30% · Tech Debt 25% · Deployability 20% · Privacy 15% · Scalability 10%
-- CRITICAL: -3.0 · HIGH: -2.0 · MEDIUM: -0.5 · LOW: -0.1
-
-### `ai-compliance-framework` — Regulatory mapping (3 modes)
-
-| Mode | Trigger | What it does |
-|------|---------|-------------|
-| `map` | "compliance mapping", "AI compliance check" | Translate governance standards → technical directives per jurisdiction + sector |
-| `compare` | "compare frameworks" | Compare agent architectures (LangGraph/CrewAI/AutoGen/etc.) against compliance |
-| `handoff` | "policy handoff", "multi-national compliance" | Generate jurisdiction-switching protocols for cross-border AI |
-
-Covers: EU AI Act · Singapore AIGF · NIST AI RMF · UK · China · Australia · Japan · South Korea · Canada · ASEAN · ISO 42001 · OECD
-
-Sectors: Government · Healthcare · Finance (MAS) · Critical Infrastructure · Oil & Gas · Education · HR · Law Enforcement
-
-### `vuln-scanner` — DAST for live targets
-
-Point it at a live URL, get a structured external vulnerability assessment.
+This skill bundle enforces the gate before the first line of code, verifies it deterministically, and gives every audit a comparable score.
 
 ---
 
@@ -44,41 +28,188 @@ Point it at a live URL, get a structured external vulnerability assessment.
 npx skills add thegeekybeng/architecture-governance
 ```
 
-For a specific skill only:
+Or install one skill at a time:
 
 ```bash
 npx skills add thegeekybeng/architecture-governance@governance
 npx skills add thegeekybeng/architecture-governance@ai-compliance-framework
+npx skills add thegeekybeng/architecture-governance@vuln-scanner
 ```
+
+---
+
+## Skills
+
+### `governance` — Master lifecycle skill
+
+Nine entry points, one skill. Dispatch by trigger phrase.
+
+| Mode | Trigger | Output |
+|------|---------|--------|
+| `scaffold` | *"set up the project"*, *"init .ai-arch/"* | `.ai-arch/` with 8 TOGAF-mapped files |
+| `adr` | *"write an ADR"*, any tech choice | Appended ADR with mandatory rejected alternatives |
+| `verify --fast` | *"verify compliance"*, *"check governance"* | Gate report (DETERMINISTIC) |
+| `verify --deep` | *"verify compliance --deep"* | Gate report + content quality check (MODEL-JUDGMENT) |
+| `diagram` | *"draw ERD"*, *"draw context diagram"*, etc. | Mermaid diagram in `.ai-arch/diagrams/` |
+| `audit` | *"audit this"*, *"audit <path>"* | 5-pillar report with weighted score |
+
+#### `verify` mode — example output
+
+```
+# Compliance Verification Report
+
+Repo: ./my-project   Date: 2026-06-18   Mode: --fast
+
+## Gate Results
+
+| Gate                      | Status      | Detail                                          |
+|---------------------------|-------------|-------------------------------------------------|
+| .ai-arch/ presence        | ✅ PASS     | 8/8 files present                               |
+| ADR quality               | ⚠️ PARTIAL  | 2 of 4 ADRs missing rejected alternatives       |
+| Data classification       | ✅ PASS     | DATAFLOW.md and ERD.md present                  |
+| AI governance             | ❌ FAIL     | AI component found; no governance framework doc |
+| NFR completeness          | ✅ PASS     | Performance, Security, Retention confirmed      |
+
+Score: 3.5/5   Status: PARTIALLY COMPLIANT
+```
+
+#### `audit` mode — scoring formula (fixed, v1.0)
+
+Audits are **comparable over time** because the formula never changes.
+
+```
+Pillar weights:   Security 30% · Tech Debt 25% · Deployability 20% · Privacy 15% · Scalability 10%
+Deductions:       CRITICAL −3.0 · HIGH −2.0 · MEDIUM −0.5 · LOW −0.1  (pillar min = 0)
+Weighted overall: Σ (pillar_score × weight)
+```
+
+Every security finding cites a CWE ID and OWASP 2021 category. No citation = downgraded to `INFO`.
+
+Example scorecard:
+
+```
+| Pillar        | Weight | Score   | CRITICAL | HIGH | MEDIUM | LOW |
+|---------------|--------|---------|----------|------|--------|-----|
+| Security      | 30%    | 7.5/10  | 0        | 1    | 3      | 2   |
+| Tech Debt     | 25%    | 8.0/10  | 0        | 0    | 4      | 6   |
+| Deployability | 20%    | 9.0/10  | 0        | 0    | 2      | 1   |
+| Privacy       | 15%    | 9.0/10  | 0        | 0    | 1      | 0   |
+| Scalability   | 10%    | 8.0/10  | 0        | 0    | 2      | 3   |
+| Weighted      | 100%   | 8.1/10  | 0        | 1    | 12     | 12  |
+```
+
+Audit history is stored in `.ai-arch/AUDIT_SCORES.json` — structured JSON so every future session can compute the trend without parsing markdown.
+
+#### `scaffold` mode — TOGAF ADM mapping
+
+The 8 files created map directly to TOGAF ADM Phase Preliminary + Phase A deliverables:
+
+| File | TOGAF Phase | Deliverable |
+|------|-------------|------------|
+| `03_PRE_PROJECT_CHECKLIST.md` | Preliminary | Architecture Principles + Capability Assessment |
+| `02_PROJECT_CONTEXT.md` | Phase A | Statement of Architecture Work |
+| `06_ARCHITECTURE_OVERVIEW.md` | Phase A | Architecture Vision (Mermaid layer diagram) |
+| `07_ARCHITECTURE_DECISIONS.md` | A–D | Architecture Decision Log (append-only) |
+| `diagrams/` | B–D | Architecture Definition Document — domain views |
+
+Source: TOGAF® Standard, 10th Edition (Open Group, 2022).
+
+---
+
+### `ai-compliance-framework` — Regulatory mapping
+
+Three modes. Covers 12 jurisdictions and 9 sectors.
+
+| Mode | Trigger | Output |
+|------|---------|--------|
+| `map` | *"AI compliance check"*, *"compliance mapping"* | Technical Directive Cards per governance dimension |
+| `compare` | *"compare frameworks"*, *"LangGraph vs CrewAI"* | Compliance matrix across agent architectures |
+| `handoff` | *"policy handoff"*, *"multi-national compliance"* | Jurisdiction-switching protocol + conflict matrix |
+
+**Jurisdictions:** EU AI Act · Singapore AIGF + Agentic AI Framework 2026 · NIST AI RMF · UK · China · Australia · Japan · South Korea · Canada · ASEAN · ISO 42001 · OECD
+
+**Sectors:** Government · Healthcare · Finance (MAS FEAT) · Critical Infrastructure · Oil & Gas (IEC 61511/61508) · Education · HR · Law Enforcement
+
+Every requirement cites a specific article, principle, or section with confidence levels (HIGH / MEDIUM / LOW). Mandatory vs. voluntary is always distinguished.
+
+> **Disclaimer:** This skill provides developer guidance, not legal advice. Verify requirements against official sources before making compliance decisions.
+
+---
+
+### `vuln-scanner` — External vulnerability scanning (DAST)
+
+Orchestrates Nuclei + nmap + httpx for live target assessment. Requires explicit legal acknowledgment before any scan executes.
+
+**Mandatory tools:** `nuclei`, `nmap`, `httpx` (install instructions built into the skill). Docker alternatives provided.
+
+**Not for:** source code analysis (use a SAST tool), dependency auditing, or targets you do not own.
 
 ---
 
 ## Skill Classification
 
-| Skill | Mode | Class |
-|-------|------|-------|
-| governance | verify, adr | **DETERMINISTIC** — reproducible without AI |
-| governance | scaffold | **GROUNDED** — TOGAF-cited, source-traced |
-| ai-compliance-framework | map, compare, handoff | **GROUNDED** — regulatory articles cited with confidence levels |
-| governance | audit, diagram | **MODEL-JUDGMENT** — requires interpretation; CWE/OWASP citations are grounded |
-| vuln-scanner | all | **GROUNDED** — external tool results, model interprets |
+This bundle is honest about what each mode can and cannot guarantee:
+
+| Mode | Class | What it means |
+|------|-------|---------------|
+| `verify` | **DETERMINISTIC** | File existence + pattern checks. Same input → same output. AI-free findings. |
+| `adr` | **DETERMINISTIC** | Format enforcement. Structural rules, not interpretation. |
+| `scaffold` | **GROUNDED** | TOGAF-cited structure. Every file maps to a published deliverable. |
+| `ai-compliance-framework` | **GROUNDED** | Regulatory articles cited with confidence levels and source dates. |
+| `audit` | **MODEL-JUDGMENT + GROUNDED** | Findings need interpretation; CWE/OWASP citations are grounded. |
+| `diagram` | **MODEL-JUDGMENT** | Content quality assessed by model; mandatory conditions are rule-enforced. |
+| `vuln-scanner` | **GROUNDED** | Tool-generated findings; model interprets, not originates. |
 
 **What this bundle does NOT do:**
-- `ai-compliance-framework` is developer guidance, not legal advice
-- `audit` findings need developer verification before action
-- `verify` checks structural gates, not semantic correctness of content
-- No skill replaces a qualified security auditor for production systems
+- Replace a qualified security auditor for production systems
+- Provide legally binding compliance advice
+- Check semantic correctness of governance document content (--fast mode)
+- Guarantee completeness of regulatory coverage
 
 ---
 
-## Requirements
+## What Goes in `.ai-arch/`
 
-- Any AI agent that supports the skills.sh protocol
-- Tested with: Antigravity
-- `.ai-arch/` folder structure is gitignored by design — it's internal governance working notes
+```
+.ai-arch/
+├── 01_README.md                 ← What this folder is + TOGAF mapping
+├── 02_PROJECT_CONTEXT.md        ← Why, who, what this project is NOT
+├── 03_PRE_PROJECT_CHECKLIST.md  ← Business Case, NFRs, Data Classification, Risk Register
+├── 04_ASSUMPTIONS.md            ← What must be true for the system to work
+├── 05_COMPLEXITY_ANALYSIS.md    ← Effort estimate: traditional vs AI-augmented
+├── 06_ARCHITECTURE_OVERVIEW.md  ← Mermaid layer diagram + prose (always mandatory)
+├── 07_ARCHITECTURE_DECISIONS.md ← ADR log (append-only, never edited)
+├── 08_AI_ASSISTANCE_MAP.md      ← Which files were AI-generated vs human-authored
+├── AUDIT_SCORES.json            ← Structured audit history (appended after each audit)
+└── diagrams/
+    ├── CONTEXT.md               ← C1: system boundary + external actors
+    ├── CONTAINERS.md            ← C2: deployable units + protocols
+    ├── ERD.md                   ← mandatory if relational DB
+    ├── DATAFLOW.md              ← mandatory if sensitive/sovereign data
+    ├── DEPLOYMENT.md            ← mandatory if edge/hybrid/sovereign infra
+    ├── SEQUENCE_[flow].md       ← per user flow, max 15 interactions
+    └── STATE_[entity].md        ← per lifecycle entity
+```
+
+> `.ai-arch/` is gitignored by design. It is internal governance working documentation, not source code.
+
+---
+
+## ADR Rules
+
+Architecture Decision Records are the core of the `adr` mode. Two rules that are never negotiated:
+
+1. **Rejected alternatives are mandatory.** A decision without alternatives did not consider the trade-space. Minimum 2 per ADR.
+2. **ADRs are never edited.** If a decision is reversed, write a new ADR that supersedes the old one.
+
+---
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ---
 
 ## License
 
-MIT
+MIT — see [LICENSE](LICENSE).

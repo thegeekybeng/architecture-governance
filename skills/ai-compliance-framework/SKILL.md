@@ -1,15 +1,10 @@
 ---
 name: governance-encoded
 description: >
-  Apply AI governance guidelines from different regions, countries, and sectors to any AI implementation.
-  Three operational modes: (1) Compliance Mapping — translate governance principles into technical
-  directives per sector, (2) Framework Architecture — compare agent architectures against compliance
-  requirements, (3) Policy Handoff — generate jurisdiction-switching protocols for multi-national
-  operations. Covers EU AI Act, Singapore AIGF (incl. Agentic AI Framework 2026), US NIST AI RMF, UK, China,
-  Australia, Japan, South Korea, Canada, ASEAN, ISO 42001, OECD. Sector overlays: Government,
-  Healthcare (NAI Council), Finance (MAS), Critical Infrastructure.
-  Trigger with: "apply AI guidelines", "AI compliance check", "compliance mapping",
-  "compare frameworks", "policy handoff", "check AI regulations for <country>".
+  Use when mapping AI regulations to technical implementation directives, comparing
+  agent frameworks against compliance requirements, or building jurisdiction-switching
+  protocols for multi-national AI. Triggers: "AI compliance check", "compliance
+  mapping", "compare frameworks", "policy handoff", "check AI regulations for <country>".
 ---
 
 # Governance Encoded

@@ -1,14 +1,11 @@
 ---
 name: governance
 description: >
-  Master architectural governance skill with five sub-specializations covering
-  the full project lifecycle. Modes: (scaffold) initialize .ai-arch/ structure
-  from TOGAF ADM Preliminary + Phase A, (adr) write Architecture Decision Records
-  with mandatory rejected alternatives, (verify) deterministically check which
-  governance gates are missing or incomplete, (diagram) generate Mermaid diagrams
-  in .ai-arch/diagrams/, (audit) five-pillar code audit with CWE/OWASP citations
-  and weighted comparable scoring. Trigger with: "set up the project", "write an ADR",
-  "verify compliance", "draw [diagram type]", "audit this", or "audit <path>".
+  Use when starting a project and needing architecture documentation, logging a
+  significant technical decision, checking which governance gates are missing or
+  incomplete, drawing architecture diagrams, or auditing code for security and
+  tech debt. Triggers: "set up the project", "write an ADR", "verify compliance",
+  "draw [diagram type]", "audit this", "audit <path>".
 ---
 
 # Governance — Master Skill
