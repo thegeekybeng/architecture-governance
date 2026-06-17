@@ -1,0 +1,6 @@
+# Antigravity IDE artifact metadata — never commit
+*.metadata.json
+
+# OS noise
+.DS_Store
+Thumbs.db
