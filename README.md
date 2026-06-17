@@ -7,7 +7,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/skills-3-6366f1?style=flat-square" />
-  <img src="https://img.shields.io/badge/modes-9-0ea5e9?style=flat-square" />
+  <img src="https://img.shields.io/badge/modes-9-0ea5e9?style=flat-square" title="governance (5) + ai-compliance-framework (3) + vuln-scanner (1)" />
   <img src="https://img.shields.io/badge/agents-Antigravity%20%7C%20Codex%20%7C%20Gemini%20CLI-22c55e?style=flat-square" />
   <img src="https://img.shields.io/badge/license-MIT-f59e0b?style=flat-square" />
 </p>
@@ -36,20 +36,38 @@ npx skills add thegeekybeng/architecture-governance@ai-compliance-framework
 npx skills add thegeekybeng/architecture-governance@vuln-scanner
 ```
 
+> Verified working: tested with Antigravity CLI, Codex, Gemini CLI. The installer clones from GitHub, detects 3 skills, and maps them to the target agent automatically.
+
 ---
 
-## Skills
+## Uninstall
+
+```bash
+# Remove all three skills
+npx skills remove governance governance-encoded vuln-scanner -g
+
+# Remove one at a time
+npx skills remove governance -g
+npx skills remove governance-encoded -g
+npx skills remove vuln-scanner -g
+
+# Interactive selection (no arguments)
+npx skills remove
+```
+
+> Note: the `ai-compliance-framework` skill installs under the name `governance-encoded` (its internal skill name). Use that name with `remove`.
+
+---
 
 ### `governance` — Master lifecycle skill
 
-Nine entry points, one skill. Dispatch by trigger phrase.
+Five modes, one skill. Dispatch by trigger phrase. (Mode count: 5 governance + 3 ai-compliance-framework + 1 vuln-scanner = 9 total.)
 
 | Mode | Trigger | Output |
 |------|---------|--------|
 | `scaffold` | *"set up the project"*, *"init .ai-arch/"* | `.ai-arch/` with 8 TOGAF-mapped files |
 | `adr` | *"write an ADR"*, any tech choice | Appended ADR with mandatory rejected alternatives |
-| `verify --fast` | *"verify compliance"*, *"check governance"* | Gate report (DETERMINISTIC) |
-| `verify --deep` | *"verify compliance --deep"* | Gate report + content quality check (MODEL-JUDGMENT) |
+| `verify` | *"verify compliance"*, *"check governance"* | Gate report — `--fast` (DETERMINISTIC, default) or `--deep` (MODEL-JUDGMENT) |
 | `diagram` | *"draw ERD"*, *"draw context diagram"*, etc. | Mermaid diagram in `.ai-arch/diagrams/` |
 | `audit` | *"audit this"*, *"audit <path>"* | 5-pillar report with weighted score |
 
@@ -128,7 +146,7 @@ Three modes. Covers 12 jurisdictions and 9 sectors.
 
 **Jurisdictions:** EU AI Act · Singapore AIGF + Agentic AI Framework 2026 · NIST AI RMF · UK · China · Australia · Japan · South Korea · Canada · ASEAN · ISO 42001 · OECD
 
-**Sectors:** Government · Healthcare · Finance (MAS FEAT) · Critical Infrastructure · Oil & Gas (IEC 61511/61508) · Education · HR · Law Enforcement
+**Sectors:** Government · Healthcare · Finance (MAS FEAT) · Critical Infrastructure · Oil & Gas (IEC 61511/61508) · Education · HR · Law Enforcement · General / Cross-sector
 
 Every requirement cites a specific article, principle, or section with confidence levels (HIGH / MEDIUM / LOW). Mandatory vs. voluntary is always distinguished.
 
