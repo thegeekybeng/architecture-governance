@@ -78,7 +78,13 @@ Create all 8 files in `<project-root>/.ai-arch/`:
   06_ARCHITECTURE_OVERVIEW.md   ← Conceptual layer diagram + prose (Mermaid)
   07_ARCHITECTURE_DECISIONS.md  ← Empty ADR log, ready for entries
   08_AI_ASSISTANCE_MAP.md       ← Track AI-generated vs human files
+  09_API_REFERENCE.md           ← Core API endpoint catalog
   AUDIT_SCORES.json             ← Audit history (created on first audit run)
+  pc2e/                         ← PC2E Mandatory Workspaces files
+    SYSTEM_LOG.md
+    PORTS.md
+    Project_Context.md
+    SECURITY_FRAMEWORK.md
 ```
 
 ### Step 3 — Generate ARCHITECTURE_OVERVIEW.md
@@ -218,9 +224,9 @@ Deterministically check which governance gates are missing or incomplete.
 
 Check: does `.ai-arch/` exist with all 8 required files?
 
-Required files: `01_README.md`, `02_PROJECT_CONTEXT.md`, `03_PRE_PROJECT_CHECKLIST.md`, `04_ASSUMPTIONS.md`, `05_COMPLEXITY_ANALYSIS.md`, `06_ARCHITECTURE_OVERVIEW.md`, `07_ARCHITECTURE_DECISIONS.md`, `08_AI_ASSISTANCE_MAP.md`
+Required files: `01_README.md`, `02_PROJECT_CONTEXT.md`, `03_PRE_PROJECT_CHECKLIST.md`, `04_ASSUMPTIONS.md`, `05_COMPLEXITY_ANALYSIS.md`, `06_ARCHITECTURE_OVERVIEW.md`, `07_ARCHITECTURE_DECISIONS.md`, `08_AI_ASSISTANCE_MAP.md`, `09_API_REFERENCE.md`
 
-`PASS`: all 8 present | `PARTIAL`: some missing | `FAIL`: .ai-arch/ absent
+`PASS`: all 9 present | `PARTIAL`: some missing | `FAIL`: .ai-arch/ absent
 
 ### Gate 2 — ADR quality
 
@@ -370,7 +376,13 @@ Data sources (left) → processing/transformation (middle) → destinations (rig
 ├── 06_ARCHITECTURE_OVERVIEW.md    ← always mandatory
 ├── 07_ARCHITECTURE_DECISIONS.md
 ├── 08_AI_ASSISTANCE_MAP.md
+├── 09_API_REFERENCE.md
 ├── AUDIT_SCORES.json
+├── pc2e/
+│   ├── SYSTEM_LOG.md              ← PC2E Mandatory Audit Trail
+│   ├── PORTS.md                   ← PC2E Mandatory Port Ledger
+│   ├── Project_Context.md         ← PC2E Mandatory High-Level Service Map
+│   └── SECURITY_FRAMEWORK.md      ← PC2E Mandatory Security Standards
 └── diagrams/
     ├── CONTEXT.md
     ├── CONTAINERS.md
