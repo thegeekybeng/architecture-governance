@@ -7,7 +7,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/skills-4-6366f1?style=flat-square" />
-  <img src="https://img.shields.io/badge/modes-11-0ea5e9?style=flat-square" title="governance (6) + ai-compliance-framework (3) + vuln-scanner (1) + taskmaster (1)" />
+  <img src="https://img.shields.io/badge/modes-11-0ea5e9?style=flat-square" title="4 skills, 11 modes total — governance (6 modes), ai-compliance-framework (3 modes), vuln-scanner (1 mode), taskmaster (1 mode)" />
   <img src="https://img.shields.io/badge/agents-Antigravity%20%7C%20Codex%20%7C%20Gemini%20CLI-22c55e?style=flat-square" />
   <img src="https://img.shields.io/badge/license-MIT-f59e0b?style=flat-square" />
 </p>
@@ -63,7 +63,7 @@ npx skills remove
 
 ### `governance` — Master lifecycle skill
 
-Six modes, one skill. Dispatch by trigger phrase. (Mode count: 6 governance + 3 ai-compliance-framework + 1 vuln-scanner + 1 taskmaster = 11 total.)
+Six modes, one skill. Dispatch by trigger phrase. (Bundle totals: 4 skills, 11 modes — 6 governance + 3 ai-compliance-framework + 1 vuln-scanner + 1 taskmaster.)
 
 | Mode | Trigger | Output |
 |------|---------|--------|
@@ -191,11 +191,13 @@ This bundle is honest about what each mode can and cannot guarantee:
 | `ai-compliance-framework` | **GROUNDED** | Regulatory articles cited with confidence levels and source dates. |
 | `audit` | **MODEL-JUDGMENT + GROUNDED** | Findings need interpretation; CWE/OWASP citations are grounded. |
 | `diagram` | **MODEL-JUDGMENT** | Content quality assessed by model; mandatory conditions are rule-enforced. |
+| `sanitize` | **MODEL-JUDGMENT** | Contextual redaction via model; reduces exposure but requires human verification. |
 | `vuln-scanner` | **GROUNDED** | Tool-generated findings; model interprets, not originates. |
 | `taskmaster` | **DETERMINISTIC** | Behavioural rules enforced structurally, not interpreted. |
 
 **What this bundle does NOT do:**
 - Replace a qualified security auditor for production systems
+- Guarantee complete PII or sensitive-data removal (`sanitize` mode reduces exposure, but output **MUST** be human-verified before sensitive data leaves a trusted boundary)
 - Provide legally binding compliance advice
 - Check semantic correctness of governance document content (--fast mode)
 - Guarantee completeness of regulatory coverage
