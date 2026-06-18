@@ -6,8 +6,8 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/skills-3-6366f1?style=flat-square" />
-  <img src="https://img.shields.io/badge/modes-10-0ea5e9?style=flat-square" title="governance (6) + ai-compliance-framework (3) + vuln-scanner (1) + taskmaster (1)" />
+  <img src="https://img.shields.io/badge/skills-4-6366f1?style=flat-square" />
+  <img src="https://img.shields.io/badge/modes-11-0ea5e9?style=flat-square" title="governance (6) + ai-compliance-framework (3) + vuln-scanner (1) + taskmaster (1)" />
   <img src="https://img.shields.io/badge/agents-Antigravity%20%7C%20Codex%20%7C%20Gemini%20CLI-22c55e?style=flat-square" />
   <img src="https://img.shields.io/badge/license-MIT-f59e0b?style=flat-square" />
 </p>
@@ -37,15 +37,15 @@ npx skills add thegeekybeng/architecture-governance@vuln-scanner
 npx skills add thegeekybeng/architecture-governance@taskmaster
 ```
 
-> Verified working: tested with Antigravity CLI, Codex, Gemini CLI. The installer clones from GitHub, detects 3 skills, and maps them to the target agent automatically.
+> Verified working: tested with Antigravity CLI, Codex, Gemini CLI. The installer clones from GitHub, detects 4 skills, and maps them to the target agent automatically.
 
 ---
 
 ## Uninstall
 
 ```bash
-# Remove all three skills
-npx skills remove governance governance-encoded vuln-scanner -g
+# Remove all four skills
+npx skills remove governance governance-encoded vuln-scanner taskmaster -g
 
 # Remove one at a time
 npx skills remove governance -g
@@ -63,7 +63,7 @@ npx skills remove
 
 ### `governance` — Master lifecycle skill
 
-Five modes, one skill. Dispatch by trigger phrase. (Mode count: 5 governance + 3 ai-compliance-framework + 1 vuln-scanner = 9 total.)
+Six modes, one skill. Dispatch by trigger phrase. (Mode count: 6 governance + 3 ai-compliance-framework + 1 vuln-scanner + 1 taskmaster = 11 total.)
 
 | Mode | Trigger | Output |
 |------|---------|--------|
@@ -72,6 +72,7 @@ Five modes, one skill. Dispatch by trigger phrase. (Mode count: 5 governance + 3
 | `verify` | *"verify compliance"*, *"check governance"* | Gate report — `--fast` (DETERMINISTIC, default) or `--deep` (MODEL-JUDGMENT) |
 | `diagram` | *"draw ERD"*, *"draw context diagram"*, etc. | Mermaid diagram in `.ai-arch/diagrams/` |
 | `audit` | *"audit this"*, *"audit <path>"* | 5-pillar report with weighted score |
+| `sanitize` | *"sanitize PII"*, *"obfuscate network"* | Scrubbed text/code output replacing sensitive data |
 
 #### `verify` mode — example output
 
@@ -191,12 +192,14 @@ This bundle is honest about what each mode can and cannot guarantee:
 | `audit` | **MODEL-JUDGMENT + GROUNDED** | Findings need interpretation; CWE/OWASP citations are grounded. |
 | `diagram` | **MODEL-JUDGMENT** | Content quality assessed by model; mandatory conditions are rule-enforced. |
 | `vuln-scanner` | **GROUNDED** | Tool-generated findings; model interprets, not originates. |
+| `taskmaster` | **DETERMINISTIC** | Behavioural rules enforced structurally, not interpreted. |
 
 **What this bundle does NOT do:**
 - Replace a qualified security auditor for production systems
 - Provide legally binding compliance advice
 - Check semantic correctness of governance document content (--fast mode)
 - Guarantee completeness of regulatory coverage
+- Constrain agent behaviour perfectly (taskmaster guides behaviour, but cannot guarantee 100% LLM compliance)
 
 ---
 
