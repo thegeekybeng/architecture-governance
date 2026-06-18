@@ -4,8 +4,8 @@ description: >
   Use when starting a project and needing architecture documentation, logging a
   significant technical decision, checking which governance gates are missing or
   incomplete, drawing architecture diagrams, or auditing code for security and
-  tech debt. Triggers: "set up the project", "write an ADR", "verify compliance",
-  "draw [diagram type]", "audit this", "audit <path>".
+  tech debt, or sanitizing PII and internal network topologies. Triggers: "set up the project", "write an ADR", "verify compliance",
+  "draw [diagram type]", "audit this", "audit <path>", "sanitize PII".
 ---
 
 # Governance — Master Skill
@@ -19,6 +19,7 @@ description: >
 | `scaffold` | GROUNDED | TOGAF-mapped structure. Sources cited with edition and date. |
 | `diagram` | MODEL-JUDGMENT | Content is model-assessed; mandatory conditions are rule-enforced. |
 | `audit` | MODEL-JUDGMENT + GROUNDED | Findings require interpretation; CWE/OWASP citations are grounded. |
+| `sanitize` | DETERMINISTIC + MODEL-JUDGMENT | Regex scanning for PII, model judgment for contextual abstractions. |
 
 **DETERMINISTIC** — findings are verifiable without AI.
 **GROUNDED** — claims traceable to external authority with confidence levels.
@@ -35,8 +36,9 @@ description: >
 | `verify` | "verify compliance", "check governance", "check gates", "audit .ai-arch", "verify .ai-arch", "governance check", "check compliance" |
 | `diagram` | "draw [diagram type]", "draw context", "draw ERD", "draw deployment", "draw sequence for", "draw data flow", "draw state", "draw container" |
 | `audit` | "audit this", "audit <path>", "run dev audit", "check code quality", "audit for tech debt", "security audit" |
+| `sanitize`| "sanitize PII", "scrub the repo", "obfuscate internal IPs", "clean up personal data", "abstract hardware" |
 
-If mode is ambiguous, ask: "Which governance mode? scaffold / adr / verify / diagram / audit"
+If mode is ambiguous, ask: "Which governance mode? scaffold / adr / verify / diagram / audit / sanitize"
 
 ---
 
@@ -668,6 +670,55 @@ AUDIT_SCORES.json stores an array of entries. Append, never overwrite.
 5. **CWE/OWASP mandatory in Pillar 2.** No citation = downgrade to INFO.
 6. **Formula is fixed.** Do not adjust weights per project. Comparability depends on consistency.
 7. **Respect scope.** Audit only what was requested.
+
+---
+
+## MODE: `sanitize`
+
+Perform a comprehensive scrubbing of Personally Identifiable Information (PII) and internal network/hardware topologies to prepare a repository for public sharing.
+
+### When to use
+
+- User asks to "sanitize PII" or "prepare repo for public sharing"
+- User explicitly requests scrubbing internal IPs or hardware mentions
+
+### Step 1 — Network & Hardware Obfuscation
+
+**Check for:**
+- Internal IP addresses (`192.168.x.x`, `10.x.x.x`, `100.x.x.x` etc.)
+- Specific proprietary hardware or internal network tooling (e.g., `NAS`, `Synology`, `Tailscale`, `Mac Mini M4`, `DXP4800`)
+
+**Action:**
+- Replace internal IP addresses with generic placeholder domains (e.g., `internal.network.local`) or `1.2.3.4` for examples.
+- Abstract hardware to generic cloud-native equivalents:
+  - `NAS` / `Synology` → `Edge Storage Node`
+  - `Tailscale` / `ZeroTier` → `Encrypted Mesh VPN`
+  - `Mac Mini M4` → `Edge Compute Node`
+
+### Step 2 — Personal Data (PII) Scrubbing
+
+**Check for:**
+- Developer real names and GitHub handles (e.g., `Andrew Yeo`, `thegeekybeng`)
+- Personal email addresses and domains
+- `*Maintained by...*` signatures in markdown documentation
+
+**Action:**
+- Remove developer signatures from markdown files entirely.
+- Replace personal emails with generic `admin@example.com` placeholders.
+- Replace personal domains with generic `example.com` routing.
+
+### Step 3 — Gitignore Enforcement
+
+Ensure the `.gitignore` explicitly prevents the commitment of:
+- Internal system datasets (`*.csv`, `*.parquet`)
+- Serialized ML models (`*.pkl`, `*.pt`)
+- Analytics and plot output reports
+
+### Rules
+
+1. **Precision:** Use rigorous regex (`grep_search`) to ensure all instances are found before applying changes.
+2. **Context Awareness:** Do not break the compilation of the code; use `multi_replace_file_content` to surgically replace strings without damaging syntax.
+3. **Never push automatically:** Prepare the commit, but allow the user to push it unless explicitly instructed.
 
 ---
 
