@@ -7,7 +7,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/skills-3-6366f1?style=flat-square" />
-  <img src="https://img.shields.io/badge/modes-9-0ea5e9?style=flat-square" title="governance (5) + ai-compliance-framework (3) + vuln-scanner (1)" />
+  <img src="https://img.shields.io/badge/modes-10-0ea5e9?style=flat-square" title="governance (6) + ai-compliance-framework (3) + vuln-scanner (1) + taskmaster (1)" />
   <img src="https://img.shields.io/badge/agents-Antigravity%20%7C%20Codex%20%7C%20Gemini%20CLI-22c55e?style=flat-square" />
   <img src="https://img.shields.io/badge/license-MIT-f59e0b?style=flat-square" />
 </p>
@@ -34,6 +34,7 @@ Or install one skill at a time:
 npx skills add thegeekybeng/architecture-governance@governance
 npx skills add thegeekybeng/architecture-governance@ai-compliance-framework
 npx skills add thegeekybeng/architecture-governance@vuln-scanner
+npx skills add thegeekybeng/architecture-governance@taskmaster
 ```
 
 > Verified working: tested with Antigravity CLI, Codex, Gemini CLI. The installer clones from GitHub, detects 3 skills, and maps them to the target agent automatically.
@@ -50,6 +51,7 @@ npx skills remove governance governance-encoded vuln-scanner -g
 npx skills remove governance -g
 npx skills remove governance-encoded -g
 npx skills remove vuln-scanner -g
+npx skills remove taskmaster -g
 
 # Interactive selection (no arguments)
 npx skills remove
@@ -161,6 +163,18 @@ Orchestrates Nuclei + nmap + httpx for live target assessment. Requires explicit
 **Mandatory tools:** `nuclei`, `nmap`, `httpx` (install instructions built into the skill). Docker alternatives provided.
 
 **Not for:** source code analysis (use a SAST tool), dependency auditing, or targets you do not own.
+
+---
+
+### `taskmaster` — Strict Execution Protocol
+
+Enforces rigid AI behavioural rules: no conversational filler, mandatory up-front alternative considerations, and research-first resolution pathways.
+
+**Features:**
+- Kills open-ended conversational questions ("What's next?").
+- Limits clarifying questions to max 3, strictly at the beginning of a task.
+- Forces the agent to cite sources and provide confidence scoring (`HIGH`/`MEDIUM`/`LOW`).
+- Ensures alternative solutions are proposed before implementation, not as an afterthought.
 
 ---
 
