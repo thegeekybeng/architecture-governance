@@ -67,7 +67,7 @@ npx skills remove
 Six modes, one skill. Dispatch by trigger phrase. (Bundle totals 11 modes across 4 skills: 6 in `governance`, 3 in `ai-compliance-framework`, 1 in `vuln-scanner`, and 1 in `taskmaster`.)
 
 | Mode | Trigger | Output |
-|------|---------|--------|
+| ------ | --------- | -------- |
 | `scaffold` | "set up the project", "init .ai-arch/" | `.ai-arch/` with 10 TOGAF-mapped files |
 | `adr` | "write an ADR", any tech choice | Appended ADR with mandatory rejected alternatives |
 | `verify` | "verify compliance", "check governance" | Gate report — `--fast` (DETERMINISTIC, default) or `--deep` (MODEL-JUDGMENT) |
@@ -108,7 +108,7 @@ Every security finding cites a CWE ID and an OWASP Top 10:2025 category. No cita
 Example scorecard (scores displayed are post-deduction, starting from a base of 10):
 
 | Pillar | Weight | Score | CRITICAL | HIGH | MEDIUM | LOW |
-|--------|--------|-------|----------|------|--------|-----|
+| -------- | -------- | ------- | ---------- | ------ | -------- | ----- |
 | Security | 25% | 6.3/10 | 0 | 1 | 3 | 2 |
 | Tech Debt | 20% | 7.4/10 | 0 | 0 | 4 | 6 |
 | Deployability | 15% | 8.9/10 | 0 | 0 | 2 | 1 |
@@ -130,7 +130,7 @@ Audit history is stored in `.ai-arch/AUDIT_SCORES.json` — structured JSON so e
 The 10 files created map directly to TOGAF ADM Phase Preliminary + Phase A deliverables:
 
 | File | TOGAF Phase | Deliverable |
-|------|-------------|-------------|
+| ------ | ------------- | ------------- |
 | `01_README.md` | Preliminary | Architecture Repository orientation + TOGAF mapping |
 | `02_PROJECT_CONTEXT.md` | Phase A | Statement of Architecture Work |
 | `03_PRE_PROJECT_CHECKLIST.md` | Preliminary | Architecture Principles + Capability Assessment |
@@ -152,7 +152,7 @@ Source: TOGAF® Standard, 10th Edition (Open Group, 2022).
 Three modes. Covers 14 frameworks and jurisdictions across 9 sectors.
 
 | Mode | Trigger | Output |
-|------|---------|--------|
+| ------ | --------- | -------- |
 | `map` | "AI compliance check", "compliance mapping" | Technical Directive Cards per governance dimension |
 | `compare` | "compare frameworks", "LangGraph vs CrewAI" | Compliance matrix across agent architectures |
 | `handoff` | "policy handoff", "multi-national compliance" | Jurisdiction-switching protocol + conflict matrix |
@@ -204,7 +204,7 @@ Enforces rigid AI behavioural rules: no conversational filler, mandatory up-fron
 This bundle is honest about what each mode can and cannot guarantee:
 
 | Mode | Class | What it means |
-|------|-------|---------------|
+| ------ | ------- | --------------- |
 | `verify` | DETERMINISTIC | File existence + pattern checks. Same input → same output. AI-free findings. |
 | `adr` | DETERMINISTIC | Format enforcement. Structural rules, not interpretation. |
 | `scaffold` | GROUNDED | TOGAF-cited structure. Every file maps to a published deliverable. |
@@ -266,13 +266,13 @@ Architecture Decision Records are the core of the `adr` mode. Two rules that are
 
 This bundle references and implements principles from the following official sources:
 
-- **TOGAF® Standard, 10th Edition:** https://www.opengroup.org/togaf
-- **OWASP Top 10:2025:** https://owasp.org/Top10/2025/
-- **NIST AI Risk Management Framework (AI RMF 1.0):** https://www.nist.gov/itl/ai-risk-management-framework
-- **EU AI Act:** https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32024R1689
-- **Singapore Model AI Governance Framework:** https://www.pdpc.gov.sg/Help-and-Resources/2020/01/Model-AI-Governance-Framework
-- **Singapore Model AI Governance Framework for Agentic AI (IMDA, 2026):** https://www.imda.gov.sg/resources/press-releases-factsheets-and-speeches/press-releases/2026/new-model-ai-governance-framework-for-agentic-ai
-- **MAS FEAT Principles:** https://www.mas.gov.sg/publications/monographs-or-information-paper/2018/feat
+- **TOGAF® Standard, 10th Edition:** <https://www.opengroup.org/togaf>
+- **OWASP Top 10:2025:** <https://owasp.org/Top10/2025/>
+- **NIST AI Risk Management Framework (AI RMF 1.0):** <https://www.nist.gov/itl/ai-risk-management-framework>
+- **EU AI Act:** <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32024R1689>
+- **Singapore Model AI Governance Framework:** <https://www.pdpc.gov.sg/Help-and-Resources/2020/01/Model-AI-Governance-Framework>
+- **Singapore Model AI Governance Framework for Agentic AI (IMDA, 2026):** <https://www.imda.gov.sg/resources/press-releases-factsheets-and-speeches/press-releases/2026/new-model-ai-governance-framework-for-agentic-ai>
+- **MAS FEAT Principles:** <https://www.mas.gov.sg/publications/monographs-or-information-paper/2018/feat>
 
 ## Contributing
 
