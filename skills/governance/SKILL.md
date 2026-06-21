@@ -13,7 +13,7 @@ description: >
 ## Skill Classification
 
 | Mode | Class | What it means |
-|------|-------|---------------|
+| ------ | ------- | --------------- |
 | `verify` | DETERMINISTIC | File existence + pattern checks. Same input → same output. |
 | `adr` | DETERMINISTIC | Format enforcement. Structural rules, not opinions. |
 | `scaffold` | GROUNDED | TOGAF-mapped structure. Sources cited with edition and date. |
@@ -30,13 +30,13 @@ description: >
 ## Mode Selection
 
 | Mode | Trigger Phrases |
-|------|----------------|
+| ------ | ---------------- |
 | `scaffold` | "set up the project", "init .ai-arch", "initialize governance", "scaffold architecture", "start from scratch", "do this from scratch" |
 | `adr` | "log this decision", "write an ADR", "record this decision", any explicit framework/DB/auth/deployment/API choice |
 | `verify` | "verify compliance", "check governance", "check gates", "audit .ai-arch", "verify .ai-arch", "governance check", "check compliance" |
 | `diagram` | "draw [diagram type]", "draw context", "draw ERD", "draw deployment", "draw sequence for", "draw data flow", "draw state", "draw container" |
-| `audit` | "audit this", "audit <path>", "run dev audit", "check code quality", "audit for tech debt", "security audit" |
-| `sanitize`| "sanitize PII", "scrub the repo", "obfuscate internal IPs", "clean up personal data", "abstract hardware" |
+| `audit` | "audit this", "audit [path]", "run dev audit", "check code quality", "audit for tech debt", "security audit" |
+| `sanitize` | "sanitize PII", "scrub the repo", "obfuscate internal IPs", "clean up personal data", "abstract hardware" |
 
 If mode is ambiguous, ask: "Which governance mode? scaffold / adr / verify / diagram / audit / sanitize"
 
@@ -48,7 +48,7 @@ If mode is ambiguous, ask: "Which governance mode? scaffold / adr / verify / dia
 
 Initialize the `.ai-arch/` Architecture Repository for any new or existing project.
 
-### When to use
+### When to scaffold
 
 - User starts a new project
 - User says "set up the project properly" or "do this from scratch"
@@ -58,6 +58,7 @@ Initialize the `.ai-arch/` Architecture Repository for any new or existing proje
 ### Step 1 — Ask for project context (if not already known)
 
 Confirm before creating files:
+
 1. What does this project do? (one sentence)
 2. Who are the users? (list roles)
 3. What is the deployment target? (NAS, cloud, laptop, etc.)
@@ -68,7 +69,7 @@ Extract from existing context if already described. Do NOT ask questions already
 
 ### Step 2 — Create the .ai-arch/ directory structure
 
-Create all 8 files in `<project-root>/.ai-arch/`:
+Create all 10 files in `<project-root>/.ai-arch/` and a `charts/` directory:
 
 ```text
 .ai-arch/
@@ -77,10 +78,12 @@ Create all 8 files in `<project-root>/.ai-arch/`:
   03_PRE_PROJECT_CHECKLIST.md   ← 6 governance documents (fill from context)
   04_ASSUMPTIONS.md             ← What must be true for the system to work
   05_COMPLEXITY_ANALYSIS.md     ← Effort estimate with reasoning
-  06_ARCHITECTURE_OVERVIEW.md   ← Conceptual layer diagram + prose (Mermaid)
+  06_ARCHITECTURE_OVERVIEW.md   ← Conceptual layer diagram prose (HTML Link)
   07_ARCHITECTURE_DECISIONS.md  ← Empty ADR log, ready for entries
   08_AI_ASSISTANCE_MAP.md       ← Track AI-generated vs human files
   09_API_REFERENCE.md           ← Core API endpoint catalog
+  10_OBSERVABILITY_STRATEGY.md  ← L.M.T.A Framework (Logs, Metrics, Traces, Alerts)
+  charts/                       ← Dynamic HTML Architecture Charts
   AUDIT_SCORES.json             ← Audit history (created on first audit run)
   pc2e/                         ← PC2E Mandatory Workspaces files
     SYSTEM_LOG.md
@@ -91,35 +94,19 @@ Create all 8 files in `<project-root>/.ai-arch/`:
 
 ### Step 3 — Generate ARCHITECTURE_OVERVIEW.md
 
-**Diagram structure (6 elements, do not deviate):**
+**1. Create the high-res HTML diagram in `charts/architecture-overview.html`:**
+Do NOT use Mermaid. Use HTML/CSS Grid and Flexbox to build a responsive, native architecture diagram.
 
-A Mermaid `flowchart TB` with:
-- 4 named subgraphs stacked top-to-bottom, `direction LR` inside each
-- Layers in order: Business → Integration → Intelligence → Delivery
-- A `DP` node (left vertical bar) for **Data Persistence**
-- A `SG` node (right vertical bar) for **Security · Governance · PDPA**
-- Dotted arrows from both bars to all 4 layers
-- Solid arrows between layers: `BL --> IL --> NL --> DL`
+- Must include a "Download as PNG" button natively powered by `<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>` and a simple click handler.
+- Build a dark-mode layered stack: Business → Integration → Intelligence → Delivery
+- Include vertical pillars for Data Persistence and Security/Gov
+- Avoid absolute positioning; use CSS Flexbox/Grid
 
-**Colour palette (dark-mode):**
-- Business:         `fill:#085041, stroke:#5dcaa5, color:#9fe1cb`
-- Integration:      `fill:#0c447c, stroke:#85b7eb, color:#b5d4f4`
-- Intelligence:     `fill:#3c3489, stroke:#afa9ec, color:#cecbf6`
-- Delivery:         `fill:#712b13, stroke:#f0997b, color:#f5c4b3`
-- Data Persistence: `fill:#0c447c, stroke:#85b7eb, color:#b5d4f4`
-- Security/Gov:     `fill:#444441, stroke:#b4b2a9, color:#d3d1c7`
+**2. Create `06_ARCHITECTURE_OVERVIEW.md`:**
 
-**Subtitle phrases:**
-| Element | Subtitle |
-|---------|---------|
-| Business | `what the organisation needs` |
-| Integration | `how data flows` |
-| Intelligence | `what AI does with it` |
-| Delivery | `how users access it` |
-| Data Persistence (left) | `Case store · Audit log` |
-| Security/Gov (right) | `OWASP · HitL gates · PDPA` |
-
-Follow diagram with: one prose paragraph per layer + one per cross-cutting bar.
+- Do NOT include Mermaid blocks.
+- Provide a clear markdown link: `👉 **[View the High-Res HTML Layered Architecture](charts/architecture-overview.html)**`
+- Follow the link with: one prose paragraph per layer + one per cross-cutting bar.
 
 ### Step 4 — Add .ai-arch/ to .gitignore
 
@@ -149,7 +136,8 @@ Follow diagram with: one prose paragraph per layer + one per cross-cutting bar.
 | 05_COMPLEXITY_ANALYSIS.md | Phase A | Architecture Definition Document (initial) |
 | 07_ARCHITECTURE_DECISIONS.md | Phases A–D | Architecture Decision Log — persistent across all phases |
 | 08_AI_ASSISTANCE_MAP.md | Preliminary | Architecture Repository — AI contribution register |
-| diagrams/ | Phases B–D | Architecture Definition Document — detailed domain views |
+| 10_OBSERVABILITY_STRATEGY.md | Phase E | Opportunities & Solutions (Operations Transition) |
+| charts/ | Phases B–D | Architecture Definition Document — detailed domain views |
 
 Source: TOGAF® Standard, 10th Edition (Open Group, 2022). Confidence: HIGH.
 ```
@@ -157,7 +145,7 @@ Source: TOGAF® Standard, 10th Edition (Open Group, 2022). Confidence: HIGH.
 **Interview Answer (embed in PRE_PROJECT_CHECKLIST.md bottom):**
 > "Six documents before any code is written: Business Case, Stakeholder RACI, NFRs, Data Classification, Risk Register, and Assumptions. The most commonly skipped and most consequential is NFRs — without them, you cannot justify a single architecture decision."
 
-### Rules
+### Scaffold Rules
 
 - Never leave placeholder text in generated files
 - ADRs must always include rejected alternatives — a decision without alternatives is a guess
@@ -172,7 +160,7 @@ Source: TOGAF® Standard, 10th Edition (Open Group, 2022). Confidence: HIGH.
 
 Write a new Architecture Decision Record.
 
-### When to use
+### When to write ADR
 
 - User chooses a framework, library, or tool
 - User chooses a deployment model, data storage, auth method, API design, AI model, caching strategy
@@ -200,7 +188,7 @@ Write a new Architecture Decision Record.
 **Rejected alternatives:** [Alternative A] ([why rejected]); [Alternative B] ([why rejected]).
 ```
 
-### Rules
+### ADR Rules
 
 1. **Rejected alternatives are mandatory.** Minimum 2 per ADR. A decision without alternatives did not consider the trade-space.
 2. **ADRs are never edited.** If reversed, write a new ADR and mark the old one `[SUPERSEDED by ADR-XXX]`.
@@ -224,15 +212,16 @@ Deterministically check which governance gates are missing or incomplete.
 
 ### Gate 1 — .ai-arch/ presence
 
-Check: does `.ai-arch/` exist with all 8 required files?
+Check: does `.ai-arch/` exist with all 10 required files?
 
-Required files: `01_README.md`, `02_PROJECT_CONTEXT.md`, `03_PRE_PROJECT_CHECKLIST.md`, `04_ASSUMPTIONS.md`, `05_COMPLEXITY_ANALYSIS.md`, `06_ARCHITECTURE_OVERVIEW.md`, `07_ARCHITECTURE_DECISIONS.md`, `08_AI_ASSISTANCE_MAP.md`, `09_API_REFERENCE.md`
+Required files: `01_README.md`, `02_PROJECT_CONTEXT.md`, `03_PRE_PROJECT_CHECKLIST.md`, `04_ASSUMPTIONS.md`, `05_COMPLEXITY_ANALYSIS.md`, `06_ARCHITECTURE_OVERVIEW.md`, `07_ARCHITECTURE_DECISIONS.md`, `08_AI_ASSISTANCE_MAP.md`, `09_API_REFERENCE.md`, `10_OBSERVABILITY_STRATEGY.md`
 
-`PASS`: all 9 present | `PARTIAL`: some missing | `FAIL`: .ai-arch/ absent
+`PASS`: all 10 present | `PARTIAL`: some missing | `FAIL`: .ai-arch/ absent
 
 ### Gate 2 — ADR quality
 
 For each ADR in `07_ARCHITECTURE_DECISIONS.md`:
+
 - `PASS`: contains `**Rejected alternatives:**` with visible text after it
 - `INCOMPLETE`: pattern found but empty or just a dash
 - `MISSING`: no ADRs present at all
@@ -244,13 +233,15 @@ Report: N of M ADRs are compliant.
 Read `03_PRE_PROJECT_CHECKLIST.md` → locate Data Classification section.
 
 **--fast mode (existence only):**
-- Sensitive/sovereign data present → check `diagrams/DATAFLOW.md` exists
-- Relational DB confirmed (grep `07_ARCHITECTURE_DECISIONS.md` for: PostgreSQL/MySQL/SQLite/postgres/mariadb) → check `diagrams/ERD.md` exists
-- Sovereign/edge/hybrid infra (grep for: sovereign/edge/hybrid/NAS/on-premise) → check `diagrams/DEPLOYMENT.md` exists
+
+- Sensitive/sovereign data present → check `charts/dataflow.html` exists
+- Relational DB confirmed (grep `07_ARCHITECTURE_DECISIONS.md` for: PostgreSQL/MySQL/SQLite/postgres/mariadb) → check `charts/erd.html` exists
+- Sovereign/edge/hybrid infra (grep for: sovereign/edge/hybrid/NAS/on-premise) → check `charts/deployment.html` exists
 
 **--deep mode (content check, MODEL-JUDGMENT):**
-- If `diagrams/ERD.md` exists: does it contain entity definitions with PII annotations where required?
-- If `diagrams/DATAFLOW.md` exists: does it show data crossing trust boundaries?
+
+- If `charts/erd.html` exists: does it contain entity definitions with PII annotations where required?
+- If `charts/dataflow.html` exists: does it show data crossing trust boundaries?
 - Label all content findings as MODEL-JUDGMENT in output.
 
 ### Gate 4 — AI component governance
@@ -258,6 +249,7 @@ Read `03_PRE_PROJECT_CHECKLIST.md` → locate Data Classification section.
 Grep `06_ARCHITECTURE_OVERVIEW.md` and `03_PRE_PROJECT_CHECKLIST.md` for: `LLM / AI / Ollama / agent / GPT / model / inference / transformer`
 
 If found:
+
 - `PASS`: PRE_PROJECT_CHECKLIST references any documented AI runtime governance framework
 - `FAIL`: AI component found with no governance reference
 - Remediation: Document your AI governance framework in the Risk Register. Minimum controls required: anti-hallucination rules, prompt injection defence, phantom commitment prevention, mandatory audit logging.
@@ -265,11 +257,21 @@ If found:
 ### Gate 5 — NFR completeness
 
 `03_PRE_PROJECT_CHECKLIST.md` must contain minimum 3 NFR types:
+
 - Performance (grep: performance/latency/response time/throughput/SLA)
 - Security (grep: security/authentication/authorisation/OWASP)
 - Data retention (grep: retention/deletion/archive/purge)
 
 `PASS`: all 3 found | `PARTIAL`: 1-2 found | `FAIL`: none
+
+### Gate 6 — Observability Readiness
+
+Check `10_OBSERVABILITY_STRATEGY.md` for L.M.T.A (Logs, Metrics, Traces, Alerts) coverage.
+
+- **--fast mode**: File exists.
+- **--deep mode**: Check if strategy for Logs, Metrics, Traces, and Alerts are defined and aligned with standards (e.g. OpenTelemetry).
+
+`PASS`: LMTA defined | `PARTIAL`: Incomplete | `FAIL`: File missing or empty
 
 ### Delta from AUDIT_SCORES.json
 
@@ -286,13 +288,14 @@ If `AUDIT_SCORES.json` exists in `.ai-arch/`: read the last verify run and show 
 
 | Gate | Status | Detail |
 |------|--------|--------|
-| .ai-arch/ presence | ✅ PASS | 8/8 files present |
+| .ai-arch/ presence | ✅ PASS | 10/10 files present |
 | ADR quality | ⚠️ PARTIAL | 2 of 4 ADRs missing rejected alternatives |
-| Data classification | ✅ PASS | DATAFLOW.md and ERD.md present |
+| Data classification | ✅ PASS | dataflow.html and erd.html present |
 | AI governance | ❌ FAIL | AI component found; no governance framework documented in checklist |
 | NFR completeness | ✅ PASS | Performance, Security, Retention confirmed |
+| Observability | ✅ PASS | LMTA Strategy defined |
 
-**Score:** 3.5/5  **Status:** PARTIALLY COMPLIANT
+**Score:** 4.5/6  **Status:** PARTIALLY COMPLIANT
 
 ## Findings
 
@@ -312,12 +315,13 @@ If `AUDIT_SCORES.json` exists in `.ai-arch/`: read the last verify run and show 
 ```
 
 After each verify run, append to `AUDIT_SCORES.json`:
+
 ```json
 {
   "date": "YYYY-MM-DD",
   "mode": "--fast",
-  "gates": {"presence": "PASS", "adr_quality": "PARTIAL", "data_class": "PASS", "ai_governance": "FAIL", "nfr": "PASS"},
-  "score": 3.5
+  "gates": {"presence": "PASS", "adr_quality": "PARTIAL", "data_class": "PASS", "ai_governance": "FAIL", "nfr": "PASS", "observability": "PASS"},
+  "score": 4.5
 }
 ```
 
@@ -327,7 +331,7 @@ After each verify run, append to `AUDIT_SCORES.json`:
 
 ## MODE: `diagram`
 
-Generate Mermaid diagrams in `.ai-arch/diagrams/`.
+Generate dynamic HTML/CSS charts in `.ai-arch/charts/`. **Do NOT use Mermaid.**
 
 ### Invocation
 
@@ -335,40 +339,45 @@ User names the diagram: "draw context diagram", "draw ERD", "draw sequence for [
 
 If not explicitly requested, only `06_ARCHITECTURE_OVERVIEW.md` (the conceptual layer diagram) is generated — always mandatory.
 
+### HTML Generation Rules
+
+- **No Mermaid:** Build visual diagrams natively using HTML, CSS Grid, and CSS Flexbox. Avoid brittle absolute positioning.
+- **Export Script:** Every generated `.html` chart MUST include `<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>` and a simple "Download as PNG" button at the top right of the UI.
+
 ### Mandatory conditions (rule-enforced)
 
 | Diagram | Mandatory when |
-|---------|---------------|
-| `diagrams/ERD.md` | Relational DB confirmed in any ADR |
-| `diagrams/DATAFLOW.md` | Any data classified sensitive or sovereign in PRE_PROJECT_CHECKLIST |
-| `diagrams/DEPLOYMENT.md` | Sovereign, edge, or hybrid infrastructure present |
+| --------- | --------------- |
+| `charts/erd.html` | Relational DB confirmed in any ADR |
+| `charts/dataflow.html` | Any data classified sensitive or sovereign in PRE_PROJECT_CHECKLIST |
+| `charts/deployment.html` | Sovereign, edge, or hybrid infrastructure present |
 
 ### Sub-diagrams
 
-**1. Context Diagram (C1) — `diagrams/CONTEXT.md`**
+**1. Context Diagram (C1) — `charts/context.html`**
 System as single box at centre. External actors and services as surrounding boxes. Arrows show interaction direction and what flows. Nothing inside the system box — outside-in view only.
 
-**2. Container Diagram (C2) — `diagrams/CONTAINERS.md`**
+**2. Container Diagram (C2) — `charts/containers.html`**
 Each major deployable unit as a box, labelled with technology (e.g., "React + Next.js", "FastAPI", "Ollama"). Arrows between units labelled with protocol. Every technology here must have a corresponding ADR in `07_ARCHITECTURE_DECISIONS.md`.
 
-**3. Sequence Diagram — `diagrams/SEQUENCE_[flow_name].md`**
-Vertical lifelines per actor/component. Horizontal arrows in order. Governance gates and HitL checkpoints shown as explicit steps. Max 15 interactions per diagram — break into sub-flows if longer.
+**3. Sequence Diagram — `charts/sequence_[flow_name].html`**
+Vertical timelines or swimlanes per actor/component. Horizontal or flowing vertical blocks in order. Governance gates and HitL checkpoints shown as explicit steps. Max 15 interactions per diagram — break into sub-flows if longer.
 
-**4. Deployment Diagram — `diagrams/DEPLOYMENT.md`**
-Physical/virtual machines, containers, networks, security zones. Shows where each container runs. Network boundaries as nested rectangles. Data flow arrows labelled with what crosses each boundary and whether it's a trust/sovereignty boundary.
+**4. Deployment Diagram — `charts/deployment.html`**
+Physical/virtual machines, containers, networks, security zones. Shows where each container runs. Network boundaries as nested CSS Grid rectangles. Data flow arrows labelled with what crosses each boundary and whether it's a trust/sovereignty boundary.
 
-**5. State Diagram — `diagrams/STATE_[entity_name].md`**
+**5. State Diagram — `charts/state_[entity_name].html`**
 States as nodes, transitions as arrows labelled with trigger event. Guards in square brackets [condition]. Governance gates as explicit states. One file per lifecycle entity. Only for entities whose lifecycle drives business logic.
 
-**6. ERD — `diagrams/ERD.md`**
-Entities with key attributes. Relationships with cardinality. Primary and foreign keys marked. Any entity containing PII or sensitive data must be annotated with its classification level. Must align with data classification in PRE_PROJECT_CHECKLIST.
+**6. ERD — `charts/erd.html`**
+Entities with key attributes laid out in grid cards. Relationships with cardinality. Primary and foreign keys marked. Any entity containing PII or sensitive data must be annotated with its classification level. Must align with data classification in PRE_PROJECT_CHECKLIST.
 
-**7. Data Flow Diagram — `diagrams/DATAFLOW.md`**
+**7. Data Flow Diagram — `charts/dataflow.html`**
 Data sources (left) → processing/transformation (middle) → destinations (right). Arrows labelled with what data moves and whether it crosses a trust or sovereignty boundary.
 
 ### Folder structure
 
-```
+```text
 .ai-arch/
 ├── 01_README.md
 ├── 02_PROJECT_CONTEXT.md
@@ -379,20 +388,21 @@ Data sources (left) → processing/transformation (middle) → destinations (rig
 ├── 07_ARCHITECTURE_DECISIONS.md
 ├── 08_AI_ASSISTANCE_MAP.md
 ├── 09_API_REFERENCE.md
+├── 10_OBSERVABILITY_STRATEGY.md
 ├── AUDIT_SCORES.json
 ├── pc2e/
 │   ├── SYSTEM_LOG.md              ← PC2E Mandatory Audit Trail
 │   ├── PORTS.md                   ← PC2E Mandatory Port Ledger
 │   ├── Project_Context.md         ← PC2E Mandatory High-Level Service Map
 │   └── SECURITY_FRAMEWORK.md      ← PC2E Mandatory Security Standards
-└── diagrams/
-    ├── CONTEXT.md
-    ├── CONTAINERS.md
-    ├── SEQUENCE_[flow].md
-    ├── DEPLOYMENT.md
-    ├── STATE_[entity].md
-    ├── ERD.md
-    └── DATAFLOW.md
+└── charts/
+    ├── context.html
+    ├── containers.html
+    ├── sequence_[flow].html
+    ├── deployment.html
+    ├── state_[entity].html
+    ├── erd.html
+    └── dataflow.html
 ```
 
 ---
@@ -401,7 +411,7 @@ Data sources (left) → processing/transformation (middle) → destinations (rig
 
 ## MODE: `audit`
 
-Five-pillar code audit with CWE/OWASP citations and weighted comparable scoring.
+Six-pillar code audit with CWE/OWASP citations and weighted comparable scoring.
 
 ### Step 1 — Determine scope
 
@@ -420,6 +430,7 @@ Execute all five in order. Severity levels: `CRITICAL`, `HIGH`, `MEDIUM`, `LOW`,
 #### Pillar 1: Tech Debt
 
 **Check for:**
+
 - Dead code, unused imports, unused dependencies
 - TODO/FIXME/HACK/XXX comments (count and categorise)
 - Duplicated logic (copy-paste patterns)
@@ -438,6 +449,7 @@ Execute all five in order. Severity levels: `CRITICAL`, `HIGH`, `MEDIUM`, `LOW`,
 #### Pillar 2: Security
 
 **Check for:**
+
 - Hardcoded secrets (grep: `password=`, `api_key=`, `secret=`, `token=`, base64 credentials, bearer tokens)
 - SQL injection (string concatenation in queries vs parameterised)
 - XSS (unsanitised input rendered in HTML/JSX)
@@ -452,10 +464,12 @@ Execute all five in order. Severity levels: `CRITICAL`, `HIGH`, `MEDIUM`, `LOW`,
 - Docker security (running as root, mounting docker.sock, privileged mode)
 
 **Every security finding MUST cite:**
-```
+
+```text
 - **CWE:** CWE-[ID] ([name])
 - **OWASP:** A[NN]:2021 ([category name])
-```
+
+```text
 If no CWE/OWASP mapping: downgrade to `INFO`. Do not fabricate mappings.
 
 **Reference table (embed, do not hallucinate IDs):**
@@ -480,7 +494,8 @@ If no CWE/OWASP mapping: downgrade to `INFO`. Do not fabricate mappings.
 Grep for: `openai`, `anthropic`, `gemini`, `ollama`, `langchain`, `langgraph`, `crewai`, `agent`, `llm`, `inference`
 
 If found and no governance documented:
-```
+
+```text
 Severity: HIGH
 CWE: CWE-1188 (Insecure Default Initialization — insufficient AI oversight)
 OWASP: A05: Security Misconfiguration
@@ -503,6 +518,7 @@ If a documented governance framework is already referenced/applied: downgrade to
 #### Pillar 3: Deployability
 
 **Check for:**
+
 - Missing or broken Dockerfile / docker-compose.yml
 - Missing health check endpoints
 - Missing or incomplete CI/CD configuration
@@ -523,6 +539,7 @@ If a documented governance framework is already referenced/applied: downgrade to
 #### Pillar 4: Scalability
 
 **Check for:**
+
 - N+1 query patterns (ORM calls inside loops)
 - Missing database indexes on filtered/joined columns
 - Synchronous blocking operations in request handlers
@@ -543,6 +560,7 @@ If a documented governance framework is already referenced/applied: downgrade to
 #### Pillar 5: Privacy (PDPA/GDPR)
 
 **Check for:**
+
 - PII collection without documented purpose (names, emails, phone, NRIC, addresses)
 - Missing data retention policies
 - PII in logs, error messages, stack traces
@@ -559,16 +577,34 @@ If a documented governance framework is already referenced/applied: downgrade to
 
 ---
 
+#### Pillar 6: Observability
+
+**Check for:**
+
+- Missing structured logging framework (e.g., Winston, Pino, Serilog)
+- Missing distributed tracing (e.g., OpenTelemetry, Jaeger, Zipkin)
+- Missing metrics exposure (e.g., Prometheus `/metrics` endpoint)
+- Missing comprehensive health endpoints (`/health/liveness`, `/health/readiness`)
+- Hardcoded log destinations instead of stdout/stderr
+- Uncaught exception handlers missing logging
+- Missing alert routing definitions
+- Lack of correlation IDs across distributed boundaries
+
+**Tools:** `grep_search` for logger configurations, OpenTelemetry SDKs, health endpoints, and `view_file` for observability strategy (`10_OBSERVABILITY_STRATEGY.md`).
+
+---
+
 ### Step 3 — Score and output
 
 **Weighting formula:**
 
-```
+```text
 Pillar weights (sum = 100%):
-  Security:       30%
-  Tech Debt:      25%
-  Deployability:  20%
+  Security:       25%
+  Tech Debt:      20%
+  Deployability:  15%
   Privacy:        15%
+  Observability:  15%
   Scalability:    10%
 
 Per-finding deductions (pillar score starts at 10, minimum 0):
@@ -589,26 +625,27 @@ Produce artifact `audit_report.md`:
 ```markdown
 # Dev Audit Report
 
-**Target:** [path]  **Date:** [timestamp]  **Formula version:** 1.0
+**Target:** [path]  **Date:** [timestamp]  **Formula version:** 1.1
 
 ## Risk Scorecard
 
 | Pillar | Weight | Score | CRITICAL | HIGH | MEDIUM | LOW |
 |--------|--------|-------|----------|------|--------|-----|
-| Security | 30% | X.X/10 | N | N | N | N |
-| Tech Debt | 25% | X.X/10 | N | N | N | N |
-| Deployability | 20% | X.X/10 | N | N | N | N |
+| Security | 25% | X.X/10 | N | N | N | N |
+| Tech Debt | 20% | X.X/10 | N | N | N | N |
+| Deployability | 15% | X.X/10 | N | N | N | N |
 | Privacy | 15% | X.X/10 | N | N | N | N |
+| Observability | 15% | X.X/10 | N | N | N | N |
 | Scalability | 10% | X.X/10 | N | N | N | N |
 | **Weighted Overall** | 100% | **X.X/10** | **N** | **N** | **N** | **N** |
 
 ## Score History (from AUDIT_SCORES.json)
 
 [If history exists:]
-| Date | Security | Tech Debt | Deploy | Privacy | Scale | Overall | Δ Overall |
-|------|----------|-----------|--------|---------|-------|---------|-----------|
-| 2026-05-01 | 6.0 | 8.0 | 8.5 | 9.0 | 7.5 | 7.45 | — |
-| 2026-06-17 | 7.5 | 8.0 | 9.0 | 9.0 | 8.0 | 8.05 | +0.60 ↑ |
+| Date | Security | Tech Debt | Deploy | Privacy | Observability | Scale | Overall | Δ Overall |
+|------|----------|-----------|--------|---------|---------------|-------|---------|-----------|
+| 2026-05-01 | 6.0 | 8.0 | 8.5 | 9.0 | N/A | 7.5 | 7.45 | — |
+| 2026-06-17 | 7.5 | 8.0 | 9.0 | 9.0 | 8.0 | 8.0 | 8.05 | +0.60 ↑ |
 
 ## Findings
 
@@ -640,6 +677,7 @@ Ordered by risk × effort (highest impact, lowest effort first):
 ```
 
 **Append to `AUDIT_SCORES.json` after every audit:**
+
 ```json
 {
   "date": "YYYY-MM-DD",
@@ -650,6 +688,7 @@ Ordered by risk × effort (highest impact, lowest effort first):
     "tech_debt": 8.0,
     "deployability": 9.0,
     "privacy": 9.0,
+    "observability": 8.0,
     "scalability": 8.0,
     "weighted_overall": 8.05
   },
@@ -677,7 +716,7 @@ AUDIT_SCORES.json stores an array of entries. Append, never overwrite.
 
 Perform a comprehensive scrubbing of Personally Identifiable Information (PII) and internal network/hardware topologies to prepare a repository for public sharing.
 
-### When to use
+### When to sanitize
 
 - User asks to "sanitize PII" or "prepare repo for public sharing"
 - User explicitly requests scrubbing internal IPs or hardware mentions
@@ -685,10 +724,12 @@ Perform a comprehensive scrubbing of Personally Identifiable Information (PII) a
 ### Step 1 — Network & Hardware Obfuscation
 
 **Check for:**
+
 - Internal IP addresses (`192.168.x.x`, `10.x.x.x`, `100.x.x.x` etc.)
 - Specific proprietary hardware or internal network tooling (e.g., `NAS`, `Synology`, `Tailscale`, `Mac Mini M4`, `DXP4800`)
 
 **Action:**
+
 - Replace internal IP addresses with generic placeholder domains (e.g., `internal.network.local`) or `1.2.3.4` for examples.
 - Abstract hardware to generic cloud-native equivalents:
   - `NAS` / `Synology` → `Edge Storage Node`
@@ -698,11 +739,13 @@ Perform a comprehensive scrubbing of Personally Identifiable Information (PII) a
 ### Step 2 — Personal Data (PII) Scrubbing
 
 **Check for:**
-- Developer real names and GitHub handles (e.g., `Andrew Yeo`, `thegeekybeng`)
+
+- Developer real names and GitHub handles (e.g., `user_name`, `user_handle`)
 - Personal email addresses and domains
 - `*Maintained by...*` signatures in markdown documentation
 
 **Action:**
+
 - Remove developer signatures from markdown files entirely.
 - Replace personal emails with generic `admin@example.com` placeholders.
 - Replace personal domains with generic `example.com` routing.
@@ -710,11 +753,12 @@ Perform a comprehensive scrubbing of Personally Identifiable Information (PII) a
 ### Step 3 — Gitignore Enforcement
 
 Ensure the `.gitignore` explicitly prevents the commitment of:
+
 - Internal system datasets (`*.csv`, `*.parquet`)
 - Serialized ML models (`*.pkl`, `*.pt`)
 - Analytics and plot output reports
 
-### Rules
+### Sanitize Rules
 
 1. **Precision:** Use rigorous regex (`grep_search`) to ensure all instances are found before applying changes.
 2. **Context Awareness:** Do not break the compilation of the code; use `multi_replace_file_content` to surgically replace strings without damaging syntax.
