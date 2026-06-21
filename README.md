@@ -20,6 +20,14 @@ Most AI-augmented projects start with code. Architecture decisions get made impl
 
 This skill bundle enforces the gate before the first line of code, verifies it deterministically, and gives every audit a comparable score.
 
+### Why This Matters
+
+AI-generated code introduces unique risks that traditional tooling struggles to catch. This framework grounds your AI operations in recognized, industry-standard practices:
+- **Architecture Governance:** Mapped to **TOGAF ADM** to ensure decisions are deliberate and traceable.
+- **AI Risk Management:** Aligns with the **NIST AI RMF**, **EU AI Act**, and **Singapore AIGF** for transparent, accountable AI behaviour.
+- **Security & Quality:** Findings are cited directly against the **OWASP Top 10** and **CWE** taxonomy to avoid vague "code smell" feedback.
+- **Sector Compliance:** Supports specialized standards like **MAS FEAT** (Finance) and **IEC 61508** (Critical Infra) to prevent regulatory blind spots.
+
 ---
 
 ## Install
@@ -63,7 +71,7 @@ npx skills remove
 
 ### `governance` — Master lifecycle skill
 
-Six modes, one skill. Dispatch by trigger phrase. (Bundle totals: 4 skills, 11 modes — 6 governance + 3 ai-compliance-framework + 1 vuln-scanner + 1 taskmaster.)
+Six modes, one skill. Dispatch by trigger phrase. (Bundle totals 11 modes across 4 skills: 6 in `governance`, 3 in `ai-compliance-framework`, 1 in `vuln-scanner`, and 1 in `taskmaster`.)
 
 | Mode | Trigger | Output |
 |------|---------|--------|
@@ -111,13 +119,13 @@ Example scorecard:
 ```
 | Pillar        | Weight | Score   | CRITICAL | HIGH | MEDIUM | LOW |
 |---------------|--------|---------|----------|------|--------|-----|
-| Security      | 25%    | 7.5/10  | 0        | 1    | 3      | 2   |
-| Tech Debt     | 20%    | 8.0/10  | 0        | 0    | 4      | 6   |
-| Deployability | 15%    | 9.0/10  | 0        | 0    | 2      | 1   |
-| Privacy       | 15%    | 9.0/10  | 0        | 0    | 1      | 0   |
-| Observability | 15%    | 8.0/10  | 0        | 0    | 1      | 1   |
-| Scalability   | 10%    | 8.0/10  | 0        | 0    | 2      | 3   |
-| Weighted      | 100%   | 8.05/10 | 0        | 1    | 13     | 13  |
+| Security      | 25%    | 6.3/10  | 0        | 1    | 3      | 2   |
+| Tech Debt     | 20%    | 7.4/10  | 0        | 0    | 4      | 6   |
+| Deployability | 15%    | 8.9/10  | 0        | 0    | 2      | 1   |
+| Privacy       | 15%    | 9.5/10  | 0        | 0    | 1      | 0   |
+| Observability | 15%    | 9.4/10  | 0        | 0    | 1      | 1   |
+| Scalability   | 10%    | 8.7/10  | 0        | 0    | 2      | 3   |
+| Weighted      | 100%   | 8.10/10 | 0        | 1    | 13     | 13  |
 ```
 
 Audit history is stored in `.ai-arch/AUDIT_SCORES.json` — structured JSON so every future session can compute the trend without parsing markdown.
@@ -161,6 +169,12 @@ Every requirement cites a specific article, principle, or section with confidenc
 ### `vuln-scanner` — External vulnerability scanning (DAST)
 
 Orchestrates Nuclei + nmap + httpx for live target assessment. Requires explicit legal acknowledgment before any scan executes.
+
+**Mandatory Safety Requirements:**
+- **Written Authorization:** You must have explicit, written permission from the target owner before scanning.
+- **No Public Targets:** Do not scan public websites or third-party infrastructure without prior authorization.
+- **Rate Limiting:** Scans must be throttled to avoid denial-of-service (DoS) conditions on the target.
+- **Scope Logging:** All scanned targets and executed profiles must be logged for auditability.
 
 **Mandatory tools:** `nuclei`, `nmap`, `httpx` (install instructions built into the skill). Docker alternatives provided.
 
@@ -231,7 +245,7 @@ This bundle is honest about what each mode can and cannot guarantee:
     └── state_[entity].html      ← per lifecycle entity
 ```
 
-> `.ai-arch/` is gitignored by design. It is internal governance working documentation, not source code.
+> `.ai-arch/` is gitignored by design. It is internal governance working documentation, not source code. *Note: Because it is gitignored, `AUDIT_SCORES.json` only persists in your local environment. To share audit history across a team, you must explicitly commit it or export it to a persistent metrics store.*
 
 ---
 
@@ -241,6 +255,18 @@ Architecture Decision Records are the core of the `adr` mode. Two rules that are
 
 1. **Rejected alternatives are mandatory.** A decision without alternatives did not consider the trade-space. Minimum 2 per ADR.
 2. **ADRs are never edited.** If a decision is reversed, write a new ADR that supersedes the old one.
+
+---
+
+## Sources & Frameworks
+
+This skill bundle references and implements principles from the following official sources:
+- **TOGAF® Standard, 10th Edition:** [https://www.opengroup.org/togaf](https://www.opengroup.org/togaf)
+- **OWASP Top 10 (2021):** [https://owasp.org/Top10/](https://owasp.org/Top10/)
+- **NIST AI Risk Management Framework (AI RMF 1.0):** [https://www.nist.gov/itl/ai-risk-management-framework](https://www.nist.gov/itl/ai-risk-management-framework)
+- **EU AI Act:** [https://artificialintelligenceact.eu/](https://artificialintelligenceact.eu/)
+- **Singapore Model AI Governance Framework:** [https://www.pdpc.gov.sg/Help-and-Resources/2020/01/Model-AI-Governance-Framework](https://www.pdpc.gov.sg/Help-and-Resources/2020/01/Model-AI-Governance-Framework)
+- **MAS FEAT Principles:** [https://www.mas.gov.sg/publications/monographs-or-information-paper/2018/feat](https://www.mas.gov.sg/publications/monographs-or-information-paper/2018/feat)
 
 ---
 
