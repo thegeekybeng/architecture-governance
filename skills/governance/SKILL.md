@@ -128,16 +128,18 @@ Do NOT use Mermaid. Use HTML/CSS Grid and Flexbox to build a responsive, native 
 ## TOGAF ADM Deliverable Mapping
 
 | File | TOGAF Phase | Deliverable |
-|------|-------------|------------|
+|------|-------------|-------------|
+| 01_README.md | Preliminary | Architecture Repository orientation + TOGAF mapping |
+| 02_PROJECT_CONTEXT.md | Phase A | Statement of Architecture Work |
 | 03_PRE_PROJECT_CHECKLIST.md | Preliminary | Architecture Principles + Capability Assessment |
-| 02_PROJECT_CONTEXT.md | Phase A | Statement of Architecture Work — scope and constraints |
-| 06_ARCHITECTURE_OVERVIEW.md | Phase A | Architecture Vision + High-level Conceptual Architecture |
-| 04_ASSUMPTIONS.md | Preliminary | Constraints and Assumptions register |
-| 05_COMPLEXITY_ANALYSIS.md | Phase A | Architecture Definition Document (initial) |
-| 07_ARCHITECTURE_DECISIONS.md | Phases A–D | Architecture Decision Log — persistent across all phases |
-| 08_AI_ASSISTANCE_MAP.md | Preliminary | Architecture Repository — AI contribution register |
-| 10_OBSERVABILITY_STRATEGY.md | Phase E | Opportunities & Solutions (Operations Transition) |
-| charts/ | Phases B–D | Architecture Definition Document — detailed domain views |
+| 04_ASSUMPTIONS.md | Phase A | Architecture Vision — assumptions & constraints |
+| 05_COMPLEXITY_ANALYSIS.md | Phase A | Architecture Vision — feasibility & effort |
+| 06_ARCHITECTURE_OVERVIEW.md | Phase A | Architecture Vision (HTML layer diagram) |
+| 07_ARCHITECTURE_DECISIONS.md | A–D | Architecture Decision Log (append-only) |
+| 08_AI_ASSISTANCE_MAP.md | B–D | Architecture Definition Document — provenance |
+| 09_API_REFERENCE.md | Phase C | Architecture Definition Document — interfaces |
+| 10_OBSERVABILITY_STRATEGY.md | F–G | Migration Planning / Implementation Governance |
+| charts/ | B–D | Domain views |
 
 Source: TOGAF® Standard, 10th Edition (Open Group, 2022). Confidence: HIGH.
 ```
@@ -423,7 +425,7 @@ Read `.ai-arch/AUDIT_SCORES.json` if it exists. If present, show delta after sco
 
 ### Pillars
 
-Execute all five in order. Severity levels: `CRITICAL`, `HIGH`, `MEDIUM`, `LOW`, `INFO`.
+Execute all six in order. Severity levels: `CRITICAL`, `HIGH`, `MEDIUM`, `LOW`, `INFO`.
 
 ---
 
@@ -467,27 +469,27 @@ Execute all five in order. Severity levels: `CRITICAL`, `HIGH`, `MEDIUM`, `LOW`,
 
 ```text
 - **CWE:** CWE-[ID] ([name])
-- **OWASP:** A[NN]:2021 ([category name])
+- **OWASP:** A[NN]:2025 ([category name])
 
 ```text
 If no CWE/OWASP mapping: downgrade to `INFO`. Do not fabricate mappings.
 
 **Reference table (embed, do not hallucinate IDs):**
 
-| Issue | CWE | OWASP 2021 |
+| Issue | CWE | OWASP 2025 |
 |---|---|---|
-| Hardcoded credentials | CWE-798 | A07: Identification & Authentication Failures |
-| SQL injection | CWE-89 | A03: Injection |
-| XSS | CWE-79 | A03: Injection |
+| Hardcoded credentials | CWE-798 | A07: Authentication Failures |
+| SQL injection | CWE-89 | A05: Injection |
+| XSS | CWE-79 | A05: Injection |
 | CSRF | CWE-352 | A01: Broken Access Control |
 | Path traversal | CWE-22 | A01: Broken Access Control |
-| Missing rate limiting | CWE-770 | A04: Insecure Design |
-| Missing auth on route | CWE-306 | A07: Identification & Authentication Failures |
-| Insecure dependency | CWE-1395 | A06: Vulnerable & Outdated Components |
-| PII in logs | CWE-532 | A09: Security Logging & Monitoring Failures |
-| Overly permissive CORS | CWE-942 | A05: Security Misconfiguration |
-| Missing input validation | CWE-20 | A03: Injection |
-| Privileged container | CWE-250 | A05: Security Misconfiguration |
+| Missing rate limiting | CWE-770 | A06: Insecure Design |
+| Missing auth on route | CWE-306 | A07: Authentication Failures |
+| Insecure dependency | CWE-1395 | A03: Software Supply Chain Failures |
+| PII in logs | CWE-532 | A09: Security Logging & Alerting Failures |
+| Overly permissive CORS | CWE-942 | A02: Security Misconfiguration |
+| Missing input validation | CWE-20 | A05: Injection |
+| Privileged container | CWE-250 | A02: Security Misconfiguration |
 
 **AI Component Detection (sub-check within Pillar 2):**
 
@@ -498,7 +500,7 @@ If found and no governance documented:
 ```text
 Severity: HIGH
 CWE: CWE-1188 (Insecure Default Initialization — insufficient AI oversight)
-OWASP: A05: Security Misconfiguration
+OWASP: A02: Security Misconfiguration
 Description: AI component detected without documented runtime governance framework.
 Remediation: Apply a structured AI governance framework covering:
   - Anti-hallucination rules (verify before claiming, cite sources)
@@ -656,7 +658,7 @@ Produce artifact `audit_report.md`:
 - **Description:** POST /api/ml/data/upload has no rate limiting middleware.
 - **Impact:** Endpoint is vulnerable to resource exhaustion.
 - **CWE:** CWE-770 (Allocation of Resources Without Limits)
-- **OWASP:** A04:2021 — Insecure Design
+- **OWASP:** A06:2025 — Insecure Design
 - **Remediation:** Add rate-limit middleware (e.g., `express-rate-limit`, `slowapi`). Set max 10 requests/minute per IP.
 - **Effort:** small
 - **Class:** MODEL-JUDGMENT (confirmed by reading route handler)
@@ -682,7 +684,7 @@ Ordered by risk × effort (highest impact, lowest effort first):
 {
   "date": "YYYY-MM-DD",
   "target": "[path audited]",
-  "formula_version": "1.0",
+  "formula_version": "1.1",
   "scores": {
     "security": 7.5,
     "tech_debt": 8.0,
@@ -774,7 +776,7 @@ Ensure the `.gitignore` explicitly prevents the commitment of:
 2. **Cite with confidence.** Every external claim references a specific source. HIGH = verified. MEDIUM = inferred. LOW = speculative.
 3. **No placeholder text.** Every generated file is fully populated from context.
 4. **ADRs require rejected alternatives.** A decision without alternatives is a guess.
-5. **Score formula is version-controlled.** Formula version 1.0. If formula changes, bump version. Old scores remain comparable within their version.
+5. **Score formula is version-controlled.** Formula version 1.1. If formula changes, bump version. Old scores remain comparable within their version.
 6. **AI components require governance.** Any AI component detected in audit or verify mode must have a documented governance framework. Surface the five minimum controls: anti-hallucination, prompt injection defence, phantom commitment prevention, mandatory audit logging, loop-breaking protocol.
 7. **Diagram mandatory conditions are enforced, not optional.** If relational DB → ERD required. If sensitive data → DATAFLOW required. If sovereign infra → DEPLOYMENT required.
 8. **AUDIT_SCORES.json is append-only.** Never overwrite history.
