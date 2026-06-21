@@ -254,7 +254,7 @@ If found:
 
 - `PASS`: PRE_PROJECT_CHECKLIST references any documented AI runtime governance framework
 - `FAIL`: AI component found with no governance reference
-- Remediation: Document your AI governance framework in the Risk Register. Minimum controls required: anti-hallucination rules, prompt injection defence, phantom commitment prevention, mandatory audit logging.
+- Remediation: Document your AI governance framework in the Risk Register. Minimum controls required: anti-hallucination rules, prompt injection defence (structural fencing), context window bounding, phantom commitment prevention, mandatory audit logging.
 
 ### Gate 5 — NFR completeness
 
@@ -305,8 +305,9 @@ If `AUDIT_SCORES.json` exists in `.ai-arch/`: read the last verify run and show 
 - **File:** .ai-arch/03_PRE_PROJECT_CHECKLIST.md
 - **Finding:** ARCHITECTURE_OVERVIEW references Ollama. No runtime governance framework documented.
 - **Remediation:** Document your AI governance framework in the Risk Register section.
-  Minimum controls: anti-hallucination rules, prompt injection defence, phantom commitment
-  prevention, mandatory audit logging, loop-breaking protocol.
+  Minimum controls: anti-hallucination rules, prompt injection defence (structural fencing),
+  context window bounding, phantom commitment prevention, mandatory audit logging,
+  loop-breaking protocol.
 - **Class:** DETERMINISTIC (AI component detected by grep)
 
 ### ⚠️ Gate 2 — ADR-003 Missing Rejected Alternatives
@@ -504,7 +505,8 @@ OWASP: A02: Security Misconfiguration
 Description: AI component detected without documented runtime governance framework.
 Remediation: Apply a structured AI governance framework covering:
   - Anti-hallucination rules (verify before claiming, cite sources)
-  - Prompt injection defence (sanitise all external inputs to LLM)
+  - Prompt injection defence (wrap untrusted inputs in explicit structural fences)
+  - Context window bounding (hard clamp num_ctx at API boundary to prevent VRAM exhaustion)
   - Loop-breaking protocol (detect and break agent runaway loops)
   - Phantom commitment prevention (no post-session notifications promised)
   - Mandatory audit logging (all AI decisions logged with rationale)
@@ -777,6 +779,6 @@ Ensure the `.gitignore` explicitly prevents the commitment of:
 3. **No placeholder text.** Every generated file is fully populated from context.
 4. **ADRs require rejected alternatives.** A decision without alternatives is a guess.
 5. **Score formula is version-controlled.** Formula version 1.1. If formula changes, bump version. Old scores remain comparable within their version.
-6. **AI components require governance.** Any AI component detected in audit or verify mode must have a documented governance framework. Surface the five minimum controls: anti-hallucination, prompt injection defence, phantom commitment prevention, mandatory audit logging, loop-breaking protocol.
+6. **AI components require governance.** Any AI component detected in audit or verify mode must have a documented governance framework. Surface the six minimum controls: anti-hallucination, prompt injection defence (structural fencing), context window bounding, phantom commitment prevention, mandatory audit logging, loop-breaking protocol.
 7. **Diagram mandatory conditions are enforced, not optional.** If relational DB → ERD required. If sensitive data → DATAFLOW required. If sovereign infra → DEPLOYMENT required.
 8. **AUDIT_SCORES.json is append-only.** Never overwrite history.

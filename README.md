@@ -97,6 +97,8 @@ Score: 3.5/5   Status: PARTIALLY COMPLIANT
 
 Gate scoring: PASS = 1.0 · PARTIAL = 0.5 · FAIL = 0.0, averaged across gates.
 
+**AI Component Governance:** If an AI component is detected (e.g., Ollama, Langchain), the framework strictly enforces the presence of a documented governance strategy covering **six minimum controls**: anti-hallucination rules, prompt injection defence (structural fencing), context window bounding, phantom commitment prevention, mandatory audit logging, and a loop-breaking protocol.
+
 ### `audit` mode — scoring formula (fixed, v1.0)
 
 Audits are **comparable over time** because the formula never changes.
