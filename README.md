@@ -67,11 +67,11 @@ Six modes, one skill. Dispatch by trigger phrase. (Bundle totals: 4 skills, 11 m
 
 | Mode | Trigger | Output |
 |------|---------|--------|
-| `scaffold` | *"set up the project"*, *"init .ai-arch/"* | `.ai-arch/` with 8 TOGAF-mapped files |
+| `scaffold` | *"set up the project"*, *"init .ai-arch/"* | `.ai-arch/` with 10 TOGAF-mapped files |
 | `adr` | *"write an ADR"*, any tech choice | Appended ADR with mandatory rejected alternatives |
 | `verify` | *"verify compliance"*, *"check governance"* | Gate report — `--fast` (DETERMINISTIC, default) or `--deep` (MODEL-JUDGMENT) |
-| `diagram` | *"draw ERD"*, *"draw context diagram"*, etc. | Mermaid diagram in `.ai-arch/diagrams/` |
-| `audit` | *"audit this"*, *"audit <path>"* | 5-pillar report with weighted score |
+| `diagram` | *"draw ERD"*, *"draw context diagram"*, etc. | HTML chart with PNG export in `.ai-arch/charts/` |
+| `audit` | *"audit this"*, *"audit [path]"* | 6-pillar report with weighted score |
 | `sanitize` | *"sanitize PII"*, *"obfuscate network"* | Scrubbed text/code output replacing sensitive data |
 
 #### `verify` mode — example output
@@ -85,9 +85,9 @@ Repo: ./my-project   Date: 2026-06-18   Mode: --fast
 
 | Gate                      | Status      | Detail                                          |
 |---------------------------|-------------|-------------------------------------------------|
-| .ai-arch/ presence        | ✅ PASS     | 8/8 files present                               |
+| .ai-arch/ presence        | ✅ PASS     | 10/10 files present                               |
 | ADR quality               | ⚠️ PARTIAL  | 2 of 4 ADRs missing rejected alternatives       |
-| Data classification       | ✅ PASS     | DATAFLOW.md and ERD.md present                  |
+| Data classification       | ✅ PASS     | dataflow.html and erd.html present                  |
 | AI governance             | ❌ FAIL     | AI component found; no governance framework doc |
 | NFR completeness          | ✅ PASS     | Performance, Security, Retention confirmed      |
 
@@ -99,7 +99,7 @@ Score: 3.5/5   Status: PARTIALLY COMPLIANT
 Audits are **comparable over time** because the formula never changes.
 
 ```
-Pillar weights:   Security 30% · Tech Debt 25% · Deployability 20% · Privacy 15% · Scalability 10%
+Pillar weights:   Security 25% · Tech Debt 20% · Deployability 15% · Privacy 15% · Observability 15% · Scalability 10%
 Deductions:       CRITICAL −3.0 · HIGH −2.0 · MEDIUM −0.5 · LOW −0.1  (pillar min = 0)
 Weighted overall: Σ (pillar_score × weight)
 ```
@@ -111,27 +111,28 @@ Example scorecard:
 ```
 | Pillar        | Weight | Score   | CRITICAL | HIGH | MEDIUM | LOW |
 |---------------|--------|---------|----------|------|--------|-----|
-| Security      | 30%    | 7.5/10  | 0        | 1    | 3      | 2   |
-| Tech Debt     | 25%    | 8.0/10  | 0        | 0    | 4      | 6   |
-| Deployability | 20%    | 9.0/10  | 0        | 0    | 2      | 1   |
+| Security      | 25%    | 7.5/10  | 0        | 1    | 3      | 2   |
+| Tech Debt     | 20%    | 8.0/10  | 0        | 0    | 4      | 6   |
+| Deployability | 15%    | 9.0/10  | 0        | 0    | 2      | 1   |
 | Privacy       | 15%    | 9.0/10  | 0        | 0    | 1      | 0   |
+| Observability | 15%    | 8.0/10  | 0        | 0    | 1      | 1   |
 | Scalability   | 10%    | 8.0/10  | 0        | 0    | 2      | 3   |
-| Weighted      | 100%   | 8.1/10  | 0        | 1    | 12     | 12  |
+| Weighted      | 100%   | 8.05/10 | 0        | 1    | 13     | 13  |
 ```
 
 Audit history is stored in `.ai-arch/AUDIT_SCORES.json` — structured JSON so every future session can compute the trend without parsing markdown.
 
 #### `scaffold` mode — TOGAF ADM mapping
 
-The 8 files created map directly to TOGAF ADM Phase Preliminary + Phase A deliverables:
+The 10 files created map directly to TOGAF ADM Phase Preliminary + Phase A deliverables:
 
 | File | TOGAF Phase | Deliverable |
 |------|-------------|------------|
 | `03_PRE_PROJECT_CHECKLIST.md` | Preliminary | Architecture Principles + Capability Assessment |
 | `02_PROJECT_CONTEXT.md` | Phase A | Statement of Architecture Work |
-| `06_ARCHITECTURE_OVERVIEW.md` | Phase A | Architecture Vision (Mermaid layer diagram) |
+| `06_ARCHITECTURE_OVERVIEW.md` | Phase A | Architecture Vision (HTML layer diagram) |
 | `07_ARCHITECTURE_DECISIONS.md` | A–D | Architecture Decision Log (append-only) |
-| `diagrams/` | B–D | Architecture Definition Document — domain views |
+| `charts/` | B–D | Architecture Definition Document — domain views |
 
 Source: TOGAF® Standard, 10th Edition (Open Group, 2022).
 
@@ -214,18 +215,20 @@ This bundle is honest about what each mode can and cannot guarantee:
 ├── 03_PRE_PROJECT_CHECKLIST.md  ← Business Case, NFRs, Data Classification, Risk Register
 ├── 04_ASSUMPTIONS.md            ← What must be true for the system to work
 ├── 05_COMPLEXITY_ANALYSIS.md    ← Effort estimate: traditional vs AI-augmented
-├── 06_ARCHITECTURE_OVERVIEW.md  ← Mermaid layer diagram + prose (always mandatory)
+├── 06_ARCHITECTURE_OVERVIEW.md  ← HTML layer diagram + prose (always mandatory)
 ├── 07_ARCHITECTURE_DECISIONS.md ← ADR log (append-only, never edited)
 ├── 08_AI_ASSISTANCE_MAP.md      ← Which files were AI-generated vs human-authored
+├── 09_API_REFERENCE.md          ← API contracts and definitions
+├── 10_OBSERVABILITY_STRATEGY.md ← L.M.T.A (Logs, Metrics, Traces, Alerts) framework
 ├── AUDIT_SCORES.json            ← Structured audit history (appended after each audit)
-└── diagrams/
-    ├── CONTEXT.md               ← C1: system boundary + external actors
-    ├── CONTAINERS.md            ← C2: deployable units + protocols
-    ├── ERD.md                   ← mandatory if relational DB
-    ├── DATAFLOW.md              ← mandatory if sensitive/sovereign data
-    ├── DEPLOYMENT.md            ← mandatory if edge/hybrid/sovereign infra
-    ├── SEQUENCE_[flow].md       ← per user flow, max 15 interactions
-    └── STATE_[entity].md        ← per lifecycle entity
+└── charts/
+    ├── context.html             ← C1: system boundary + external actors
+    ├── containers.html          ← C2: deployable units + protocols
+    ├── erd.html                 ← mandatory if relational DB
+    ├── dataflow.html            ← mandatory if sensitive/sovereign data
+    ├── deployment.html          ← mandatory if edge/hybrid/sovereign infra
+    ├── sequence_[flow].html     ← per user flow, max 15 interactions
+    └── state_[entity].html      ← per lifecycle entity
 ```
 
 > `.ai-arch/` is gitignored by design. It is internal governance working documentation, not source code.
