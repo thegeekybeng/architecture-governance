@@ -1,6 +1,6 @@
 # architecture-governance
 
-**Architectural governance skills for AI agents**
+## Architectural governance skills for AI agents
 
 TOGAF-mapped documentation · Deterministic compliance verification · CWE/OWASP-cited code audits
 
@@ -77,7 +77,7 @@ Six modes, one skill. Dispatch by trigger phrase. (Bundle totals 11 modes across
 
 ### `verify` mode — example output
 
-```
+```text
 # Compliance Verification Report
 
 Repo: ./my-project   Date: 2026-06-18   Mode: --fast
@@ -117,7 +117,7 @@ Example scorecard (scores displayed are post-deduction, starting from a base of 
 | Scalability | 10% | 8.7/10 | 0 | 0 | 2 | 3 |
 | **Weighted** | **100%** | **8.10/10** | 0 | 1 | 13 | 13 |
 
-```
+```text
 Pillar weights:  Security 25% · Tech Debt 20% · Deployability 15% · Privacy 15% · Observability 15% · Scalability 10%   (Σ = 100%)
 Deductions:      CRITICAL −3.0 · HIGH −2.0 · MEDIUM −0.5 · LOW −0.1   (pillar score floored at 0.0)
 Weighted overall: Σ (pillar_score × weight)
@@ -228,7 +228,7 @@ This bundle is honest about what each mode can and cannot guarantee:
 
 ## What Goes in `.ai-arch/`
 
-```
+```text
 .ai-arch/
 ├── 01_README.md              ← What this folder is + TOGAF mapping
 ├── 02_PROJECT_CONTEXT.md     ← Why, who, what this project is NOT
