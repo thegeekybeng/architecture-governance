@@ -12,13 +12,13 @@ description: >
 
 ## Skill Classification
 
-| Mode | Class | What it means |
-| ------ | ------- | --------------- |
-| `verify` | DETERMINISTIC | File existence + pattern checks. Same input → same output. |
-| `adr` | DETERMINISTIC | Format enforcement. Structural rules, not opinions. |
-| `scaffold` | GROUNDED | TOGAF-mapped structure. Sources cited with edition and date. |
-| `diagram` | MODEL-JUDGMENT | Content is model-assessed; mandatory conditions are rule-enforced. |
-| `audit` | MODEL-JUDGMENT + GROUNDED | Findings require interpretation; CWE/OWASP citations are grounded. |
+| Mode       | Class                          | What it means                                                       |
+| ---------- | ------------------------------ | ------------------------------------------------------------------- |
+| `verify`   | DETERMINISTIC                  | File existence + pattern checks. Same input → same output.          |
+| `adr`      | DETERMINISTIC                  | Format enforcement. Structural rules, not opinions.                 |
+| `scaffold` | GROUNDED                       | TOGAF-mapped structure. Sources cited with edition and date.        |
+| `diagram`  | MODEL-JUDGMENT                 | Content is model-assessed; mandatory conditions are rule-enforced.  |
+| `audit`    | MODEL-JUDGMENT + GROUNDED      | Findings require interpretation; CWE/OWASP citations are grounded.  |
 | `sanitize` | DETERMINISTIC + MODEL-JUDGMENT | Regex scanning for PII, model judgment for contextual abstractions. |
 
 **DETERMINISTIC** — findings are verifiable without AI.
@@ -29,14 +29,14 @@ description: >
 
 ## Mode Selection
 
-| Mode | Trigger Phrases |
-| ------ | ---------------- |
-| `scaffold` | "set up the project", "init .ai-arch", "initialize governance", "scaffold architecture", "start from scratch", "do this from scratch" |
-| `adr` | "log this decision", "write an ADR", "record this decision", any explicit framework/DB/auth/deployment/API choice |
-| `verify` | "verify compliance", "check governance", "check gates", "audit .ai-arch", "verify .ai-arch", "governance check", "check compliance" |
-| `diagram` | "draw [diagram type]", "draw context", "draw ERD", "draw deployment", "draw sequence for", "draw data flow", "draw state", "draw container" |
-| `audit` | "audit this", "audit [path]", "run dev audit", "check code quality", "audit for tech debt", "security audit" |
-| `sanitize` | "sanitize PII", "scrub the repo", "obfuscate internal IPs", "clean up personal data", "abstract hardware" |
+| Mode       | Trigger Phrases                                                                                                                             |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `scaffold` | "set up the project", "init .ai-arch", "initialize governance", "scaffold architecture", "start from scratch", "do this from scratch"       |
+| `adr`      | "log this decision", "write an ADR", "record this decision", any explicit framework/DB/auth/deployment/API choice                           |
+| `verify`   | "verify compliance", "check governance", "check gates", "audit .ai-arch", "verify .ai-arch", "governance check", "check compliance"         |
+| `diagram`  | "draw [diagram type]", "draw context", "draw ERD", "draw deployment", "draw sequence for", "draw data flow", "draw state", "draw container" |
+| `audit`    | "audit this", "audit [path]", "run dev audit", "check code quality", "audit for tech debt", "security audit"                                |
+| `sanitize` | "sanitize PII", "scrub the repo", "obfuscate internal IPs", "clean up personal data", "abstract hardware"                                   |
 
 If mode is ambiguous, ask: "Which governance mode? scaffold / adr / verify / diagram / audit / sanitize"
 
@@ -349,11 +349,11 @@ If not explicitly requested, only `06_ARCHITECTURE_OVERVIEW.md` (the conceptual 
 
 ### Mandatory conditions (rule-enforced)
 
-| Diagram | Mandatory when |
-| --------- | --------------- |
-| `charts/erd.html` | Relational DB confirmed in any ADR |
-| `charts/dataflow.html` | Any data classified sensitive or sovereign in PRE_PROJECT_CHECKLIST |
-| `charts/deployment.html` | Sovereign, edge, or hybrid infrastructure present |
+| Diagram                  | Mandatory when                                                      |
+| ------------------------ | ------------------------------------------------------------------- |
+| `charts/erd.html`        | Relational DB confirmed in any ADR                                  |
+| `charts/dataflow.html`   | Any data classified sensitive or sovereign in PRE_PROJECT_CHECKLIST |
+| `charts/deployment.html` | Sovereign, edge, or hybrid infrastructure present                   |
 
 ### Sub-diagrams
 
@@ -477,20 +477,20 @@ If no CWE/OWASP mapping: downgrade to `INFO`. Do not fabricate mappings.
 
 **Reference table (embed, do not hallucinate IDs):**
 
-| Issue | CWE | OWASP 2025 |
-|---|---|---|
-| Hardcoded credentials | CWE-798 | A07: Authentication Failures |
-| SQL injection | CWE-89 | A05: Injection |
-| XSS | CWE-79 | A05: Injection |
-| CSRF | CWE-352 | A01: Broken Access Control |
-| Path traversal | CWE-22 | A01: Broken Access Control |
-| Missing rate limiting | CWE-770 | A06: Insecure Design |
-| Missing auth on route | CWE-306 | A07: Authentication Failures |
-| Insecure dependency | CWE-1395 | A03: Software Supply Chain Failures |
-| PII in logs | CWE-532 | A09: Security Logging & Alerting Failures |
-| Overly permissive CORS | CWE-942 | A02: Security Misconfiguration |
-| Missing input validation | CWE-20 | A05: Injection |
-| Privileged container | CWE-250 | A02: Security Misconfiguration |
+| Issue                    | CWE      | OWASP 2025                                |
+| ------------------------ | -------- | ----------------------------------------- |
+| Hardcoded credentials    | CWE-798  | A07: Authentication Failures              |
+| SQL injection            | CWE-89   | A05: Injection                            |
+| XSS                      | CWE-79   | A05: Injection                            |
+| CSRF                     | CWE-352  | A01: Broken Access Control                |
+| Path traversal           | CWE-22   | A01: Broken Access Control                |
+| Missing rate limiting    | CWE-770  | A06: Insecure Design                      |
+| Missing auth on route    | CWE-306  | A07: Authentication Failures              |
+| Insecure dependency      | CWE-1395 | A03: Software Supply Chain Failures       |
+| PII in logs              | CWE-532  | A09: Security Logging & Alerting Failures |
+| Overly permissive CORS   | CWE-942  | A02: Security Misconfiguration            |
+| Missing input validation | CWE-20   | A05: Injection                            |
+| Privileged container     | CWE-250  | A02: Security Misconfiguration            |
 
 **AI Component Detection (sub-check within Pillar 2):**
 
