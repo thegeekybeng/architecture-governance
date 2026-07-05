@@ -4,9 +4,9 @@
 
 TOGAF-mapped documentation · Deterministic compliance verification · CWE/OWASP-cited code audits
 
-`skills 4` · `modes 11` · `agents Antigravity · Codex · Gemini CLI · Claude Code` · `license MIT`
+`skills 4` · `modes 10` · `agents Antigravity · Codex · Gemini CLI · Claude Code` · `license MIT`
 
-> **Note:** The "11 modes" total includes 9 explicitly documented in the tables below for `governance` and `ai-compliance-framework`, plus 1 mode each for the single-purpose `vuln-scanner` and `taskmaster` skills.
+> **Note:** The "10 modes" total covers 6 in `governance`, 3 in `ai-compliance-framework`, and 1 in `vuln-scanner`. The `taskmaster` skill is a behavioural protocol, not a modal dispatch.
 
 This bundle is distributed as SKILL.md Agent Skills and runs on any agent that supports the format, including Claude Code. Verified working with the agents listed below.
 
@@ -62,20 +62,35 @@ npx skills remove
 
 ---
 
-## `governance` — Master lifecycle skill
+## `governance` -- Master lifecycle skill
 
-Six modes, one skill. Dispatch by trigger phrase. (Bundle totals 11 modes across 4 skills: 6 in `governance`, 3 in `ai-compliance-framework`, 1 in `vuln-scanner`, and 1 in `taskmaster`.)
+Six modes, one skill. Dispatch by trigger phrase.
 
-| Mode | Trigger | Output |
-| ------ | --------- | -------- |
-| `scaffold` | "set up the project", "init .ai-arch/" | `.ai-arch/` with 10 TOGAF-mapped files |
-| `adr` | "write an ADR", any tech choice | Appended ADR with mandatory rejected alternatives |
-| `verify` | "verify compliance", "check governance" | Gate report — `--fast` (DETERMINISTIC, default) or `--deep` (MODEL-JUDGMENT) |
-| `diagram` | "draw ERD", "draw context diagram", etc. | HTML chart with PNG export in `.ai-arch/charts/` |
-| `audit` | "audit this", "audit [path]" | 6-pillar report with weighted score |
-| `sanitize` | "sanitize PII", "obfuscate network" | Scrubbed text/code output replacing sensitive data |
+| Mode       | Trigger                                   | Output                                                                          |
+| ---------- | ----------------------------------------- | ------------------------------------------------------------------------------- |
+| `scaffold` | "set up the project", "init .ai-arch/"    | `.ai-arch/` with 10 TOGAF-mapped files + `charts/` + `pc2e/`                    |
+| `adr`      | "write an ADR", any tech choice           | Appended ADR with mandatory rejected alternatives                               |
+| `verify`   | "verify compliance", "check governance"   | 6-gate report -- `--fast` (DETERMINISTIC, default) or `--deep` (MODEL-JUDGMENT) |
+| `diagram`  | "draw ERD", "draw context diagram", etc.  | HTML/CSS chart with PNG export in `.ai-arch/charts/`                            |
+| `audit`    | "audit this", "audit [path]"              | 6-pillar report with weighted score and CWE/OWASP citations                     |
+| `sanitize` | "sanitize PII", "prepare for open source" | 7-step privacy scrub + example file generation + verification sweep             |
 
-### `verify` mode — example output
+### `verify` mode -- 6 compliance gates
+
+The verify mode runs deterministic checks (`--fast`, default) or adds model-assisted semantic checks (`--deep`).
+
+| Gate | What it checks                                                                              |
+| ---- | ------------------------------------------------------------------------------------------- |
+| 1    | `.ai-arch/` presence -- all 10 required files exist                                         |
+| 2    | ADR quality -- every ADR contains `**Rejected alternatives:**` with visible content         |
+| 3    | Data classification consistency -- required charts exist for sensitive data / relational DB |
+| 4    | AI component governance -- AI detected -> governance framework documented                   |
+| 5    | NFR completeness -- minimum 3 types: performance, security, data retention                  |
+| 6    | Observability readiness -- L.M.T.A (Logs, Metrics, Traces, Alerts) strategy defined         |
+
+Gate scoring: `PASS` = 1.0 · `PARTIAL` = 0.5 · `FAIL` = 0.0, summed across 6 gates.
+
+**Example output:**
 
 ```text
 # Compliance Verification Report
@@ -84,38 +99,37 @@ Repo: ./my-project   Date: 2026-06-18   Mode: --fast
 
 ## Gate Results
 
-| Gate                      | Status      | Detail
-|---------------------------|-------------|------------------------------------------
-| .ai-arch/ presence        | ✅ PASS     | 10/10 files present
-| ADR quality               | ⚠️ PARTIAL  | 2 of 4 ADRs missing rejected alternatives
-| Data classification       | ✅ PASS     | dataflow.html and erd.html present
-| AI governance             | ❌ FAIL     | AI component found; no governance framework
-| NFR completeness          | ✅ PASS     | Performance, Security, Retention configured
+| Gate                | Status     | Detail                                                 |
+| ------------------- | ---------- | ------------------------------------------------------ |
+| .ai-arch/ presence  | ✅ PASS     | 10/10 files present                                    |
+| ADR quality         | ⚠️ PARTIAL | 2 of 4 ADRs missing rejected alternatives              |
+| Data classification | ✅ PASS     | dataflow.html and erd.html present                     |
+| AI governance       | ❌ FAIL     | AI component found; no governance framework documented |
+| NFR completeness    | ✅ PASS     | Performance, Security, Retention confirmed             |
+| Observability       | ✅ PASS     | LMTA Strategy defined                                  |
 
-Score: 3.5/5   Status: PARTIALLY COMPLIANT
+Score: 4.5/6   Status: PARTIALLY COMPLIANT
 ```
-
-Gate scoring: PASS = 1.0 · PARTIAL = 0.5 · FAIL = 0.0, averaged across gates.
 
 **AI Component Governance:** If an AI component is detected (e.g., Ollama, Langchain), the framework strictly enforces the presence of a documented governance strategy covering **six minimum controls**: anti-hallucination rules, prompt injection defence (structural fencing), context window bounding, phantom commitment prevention, mandatory audit logging, and a loop-breaking protocol.
 
-### `audit` mode — scoring formula (fixed, v1.0)
+### `audit` mode -- scoring formula (fixed, v1.1)
 
-Audits are **comparable over time** because the formula never changes.
+Audits are **comparable over time** because the formula never changes within a version.
 
 Every security finding cites a CWE ID and an OWASP Top 10:2025 category. No citation = downgraded to `INFO`.
 
 Example scorecard (scores displayed are post-deduction, starting from a base of 10):
 
-| Pillar | Weight | Score | CRITICAL | HIGH | MEDIUM | LOW |
-| -------- | -------- | ------- | ---------- | ------ | -------- | ----- |
-| Security | 25% | 6.3/10 | 0 | 1 | 3 | 2 |
-| Tech Debt | 20% | 7.4/10 | 0 | 0 | 4 | 6 |
-| Deployability | 15% | 8.9/10 | 0 | 0 | 2 | 1 |
-| Privacy | 15% | 9.5/10 | 0 | 0 | 1 | 0 |
-| Observability | 15% | 9.4/10 | 0 | 0 | 1 | 1 |
-| Scalability | 10% | 8.7/10 | 0 | 0 | 2 | 3 |
-| **Weighted** | **100%** | **8.10/10** | 0 | 1 | 13 | 13 |
+| Pillar        | Weight   | Score       | CRITICAL | HIGH | MEDIUM | LOW |
+| ------------- | -------- | ----------- | -------- | ---- | ------ | --- |
+| Security      | 25%      | 6.3/10      | 0        | 1    | 3      | 2   |
+| Tech Debt     | 20%      | 7.4/10      | 0        | 0    | 4      | 6   |
+| Deployability | 15%      | 8.9/10      | 0        | 0    | 2      | 1   |
+| Privacy       | 15%      | 9.5/10      | 0        | 0    | 1      | 0   |
+| Observability | 15%      | 9.4/10      | 0        | 0    | 1      | 1   |
+| Scalability   | 10%      | 8.7/10      | 0        | 0    | 2      | 3   |
+| **Weighted**  | **100%** | **8.10/10** | 0        | 1    | 13     | 13  |
 
 ```text
 Pillar weights:  Security 25% · Tech Debt 20% · Deployability 15% · Privacy 15% · Observability 15% · Scalability 10%   (Σ = 100%)
@@ -123,39 +137,55 @@ Deductions:      CRITICAL −3.0 · HIGH −2.0 · MEDIUM −0.5 · LOW −0.1  
 Weighted overall: Σ (pillar_score × weight)
 ```
 
-Audit history is stored in `.ai-arch/AUDIT_SCORES.json` — structured JSON so every future session can compute the trend without parsing markdown.
+Audit history is stored in `.ai-arch/AUDIT_SCORES.json` -- structured JSON so every future session can compute the trend without parsing markdown.
 
-### `scaffold` mode — TOGAF ADM mapping
+### `sanitize` mode -- open-source release preparation
+
+A 7-step comprehensive privacy scrub that prepares a private repo for public release:
+
+| Step | What it does                                                                 |
+| ---- | ---------------------------------------------------------------------------- |
+| 1    | Secrets & env var scrubbing -- regex patterns for passwords, tokens, hashes  |
+| 2    | Network & hardware obfuscation -- IPs, domains, NAS models, VPN names        |
+| 3    | PII scrubbing -- developer names, emails, personal domains, author fields    |
+| 4    | Docker infrastructure sanitization -- generates `example.*` counterparts     |
+| 5    | Gitignore enforcement -- prevents real docker-compose/env files from leaking |
+| 6    | Cross-reference verification sweep -- catches any residual leaks             |
+| 7    | Sanitization report artifact -- full accounting of every finding and fix     |
+
+Key rules: never modifies gitignored files directly, idempotent (safe to run twice), zero residual leaks is the only acceptable outcome.
+
+### `scaffold` mode -- TOGAF ADM mapping
 
 The 10 files created map directly to TOGAF ADM Phase Preliminary + Phase A deliverables:
 
-| File | TOGAF Phase | Deliverable |
-| ------ | ------------- | ------------- |
-| `01_README.md` | Preliminary | Architecture Repository orientation + TOGAF mapping |
-| `02_PROJECT_CONTEXT.md` | Phase A | Statement of Architecture Work |
-| `03_PRE_PROJECT_CHECKLIST.md` | Preliminary | Architecture Principles + Capability Assessment |
-| `04_ASSUMPTIONS.md` | Phase A | Architecture Vision — assumptions & constraints |
-| `05_COMPLEXITY_ANALYSIS.md` | Phase A | Architecture Vision — feasibility & effort |
-| `06_ARCHITECTURE_OVERVIEW.md` | Phase A | Architecture Vision (HTML layer diagram) |
-| `07_ARCHITECTURE_DECISIONS.md` | A–D | Architecture Decision Log (append-only) |
-| `08_AI_ASSISTANCE_MAP.md` | B–D | Architecture Definition Document — provenance |
-| `09_API_REFERENCE.md` | Phase C | Architecture Definition Document — interfaces |
-| `10_OBSERVABILITY_STRATEGY.md` | F–G | Migration Planning / Implementation Governance |
-| `charts/` | B–D | Domain views |
+| File                           | TOGAF Phase | Deliverable                                         |
+| ------------------------------ | ----------- | --------------------------------------------------- |
+| `01_README.md`                 | Preliminary | Architecture Repository orientation + TOGAF mapping |
+| `02_PROJECT_CONTEXT.md`        | Phase A     | Statement of Architecture Work                      |
+| `03_PRE_PROJECT_CHECKLIST.md`  | Preliminary | Architecture Principles + Capability Assessment     |
+| `04_ASSUMPTIONS.md`            | Phase A     | Architecture Vision -- assumptions & constraints    |
+| `05_COMPLEXITY_ANALYSIS.md`    | Phase A     | Architecture Vision -- feasibility & effort         |
+| `06_ARCHITECTURE_OVERVIEW.md`  | Phase A     | Architecture Vision (HTML layer diagram)            |
+| `07_ARCHITECTURE_DECISIONS.md` | A-D         | Architecture Decision Log (append-only)             |
+| `08_AI_ASSISTANCE_MAP.md`      | B-D         | Architecture Definition Document -- provenance      |
+| `09_API_REFERENCE.md`          | Phase C     | Architecture Definition Document -- interfaces      |
+| `10_OBSERVABILITY_STRATEGY.md` | F-G         | Migration Planning / Implementation Governance      |
+| `charts/`                      | B-D         | Domain views                                        |
 
 Source: TOGAF® Standard, 10th Edition (Open Group, 2022).
 
 ---
 
-## `ai-compliance-framework` — Regulatory mapping
+## `ai-compliance-framework` -- Regulatory mapping
 
 Three modes. Covers 14 frameworks and jurisdictions across 9 sectors.
 
-| Mode | Trigger | Output |
-| ------ | --------- | -------- |
-| `map` | "AI compliance check", "compliance mapping" | Technical Directive Cards per governance dimension |
-| `compare` | "compare frameworks", "LangGraph vs CrewAI" | Compliance matrix across agent architectures |
-| `handoff` | "policy handoff", "multi-national compliance" | Jurisdiction-switching protocol + conflict matrix |
+| Mode      | Trigger                                       | Output                                             |
+| --------- | --------------------------------------------- | -------------------------------------------------- |
+| `map`     | "AI compliance check", "compliance mapping"   | Technical Directive Cards per governance dimension |
+| `compare` | "compare frameworks", "LangGraph vs CrewAI"   | Compliance matrix across agent architectures       |
+| `handoff` | "policy handoff", "multi-national compliance" | Jurisdiction-switching protocol + conflict matrix  |
 
 **Frameworks & jurisdictions (14):** EU AI Act · Singapore (Model AI Governance Framework + Model AI Governance Framework for Agentic AI, 2026) · NIST AI RMF · UK · China · Australia · Japan · South Korea · Canada · India · Brazil · ASEAN · ISO 42001 · OECD
 
@@ -169,7 +199,7 @@ Every requirement cites a specific article, principle, or section with confidenc
 
 ---
 
-## `vuln-scanner` — External vulnerability scanning (DAST)
+## `vuln-scanner` -- External vulnerability scanning (DAST)
 
 Orchestrates Nuclei + nmap + httpx for live target assessment. Requires explicit legal acknowledgment before any scan executes.
 
@@ -186,7 +216,7 @@ Orchestrates Nuclei + nmap + httpx for live target assessment. Requires explicit
 
 ---
 
-## `taskmaster` — Strict Execution Protocol
+## `taskmaster` -- Strict Execution Protocol
 
 Enforces rigid AI behavioural rules: no conversational filler, mandatory up-front alternative considerations, and research-first resolution pathways.
 
@@ -196,6 +226,7 @@ Enforces rigid AI behavioural rules: no conversational filler, mandatory up-fron
 - Limits clarifying questions to max 3, strictly at the beginning of a task.
 - Forces the agent to cite sources and provide confidence scoring (HIGH / MEDIUM / LOW).
 - Ensures alternative solutions are proposed before implementation, not as an afterthought.
+- Requires the agent to consult `.ai-arch/` documents before proposing any fix or feature.
 
 ---
 
@@ -203,17 +234,17 @@ Enforces rigid AI behavioural rules: no conversational filler, mandatory up-fron
 
 This bundle is honest about what each mode can and cannot guarantee:
 
-| Mode | Class | What it means |
-| ------ | ------- | --------------- |
-| `verify` | DETERMINISTIC | File existence + pattern checks. Same input → same output. AI-free findings. |
-| `adr` | DETERMINISTIC | Format enforcement. Structural rules, not interpretation. |
-| `scaffold` | GROUNDED | TOGAF-cited structure. Every file maps to a published deliverable. |
-| `ai-compliance-framework` | GROUNDED | Regulatory articles cited with confidence levels and source dates. |
-| `audit` | MODEL-JUDGMENT + GROUNDED | Findings need interpretation; CWE/OWASP citations are grounded. |
-| `diagram` | MODEL-JUDGMENT | Content quality assessed by model; mandatory conditions are rule-enforced. |
-| `sanitize` | MODEL-JUDGMENT | Contextual redaction via model; reduces exposure but requires human verification. |
-| `vuln-scanner` | GROUNDED | Tool-generated findings; model interprets, not originates. |
-| `taskmaster` | DETERMINISTIC | Behavioural rules enforced structurally, not interpreted. |
+| Mode                      | Class                          | What it means                                                       |
+| ------------------------- | ------------------------------ | ------------------------------------------------------------------- |
+| `verify`                  | DETERMINISTIC                  | File existence + pattern checks. Same input -> same output.         |
+| `adr`                     | DETERMINISTIC                  | Format enforcement. Structural rules, not interpretation.           |
+| `scaffold`                | GROUNDED                       | TOGAF-cited structure. Every file maps to a published deliverable.  |
+| `ai-compliance-framework` | GROUNDED                       | Regulatory articles cited with confidence levels and source dates.  |
+| `audit`                   | MODEL-JUDGMENT + GROUNDED      | Findings need interpretation; CWE/OWASP citations are grounded.     |
+| `diagram`                 | MODEL-JUDGMENT                 | Content quality assessed by model; mandatory conditions enforced.   |
+| `sanitize`                | DETERMINISTIC + MODEL-JUDGMENT | Regex scanning for PII, model judgment for contextual abstractions. |
+| `vuln-scanner`            | GROUNDED                       | Tool-generated findings; model interprets, not originates.          |
+| `taskmaster`              | DETERMINISTIC                  | Behavioural rules enforced structurally, not interpreted.           |
 
 **What this bundle does NOT do:**
 
@@ -230,25 +261,30 @@ This bundle is honest about what each mode can and cannot guarantee:
 
 ```text
 .ai-arch/
-├── 01_README.md              ← What this folder is + TOGAF mapping
-├── 02_PROJECT_CONTEXT.md     ← Why, who, what this project is NOT
-├── 03_PRE_PROJECT_CHECKLIST.md  ← Business Case, NFRs, Data Classification, Risk
-├── 04_ASSUMPTIONS.md         ← What must be true for the system to work
-├── 05_COMPLEXITY_ANALYSIS.md ← Effort estimate: traditional vs AI-augmented
-├── 06_ARCHITECTURE_OVERVIEW.md  ← HTML layer diagram + prose (always mandatory)
+├── 01_README.md                ← What this folder is + TOGAF mapping
+├── 02_PROJECT_CONTEXT.md       ← Why, who, what this project is NOT
+├── 03_PRE_PROJECT_CHECKLIST.md ← Business Case, NFRs, Data Classification, Risk
+├── 04_ASSUMPTIONS.md           ← What must be true for the system to work
+├── 05_COMPLEXITY_ANALYSIS.md   ← Effort estimate: traditional vs AI-augmented
+├── 06_ARCHITECTURE_OVERVIEW.md ← HTML layer diagram + prose (always mandatory)
 ├── 07_ARCHITECTURE_DECISIONS.md ← ADR log (append-only, never edited)
-├── 08_AI_ASSISTANCE_MAP.md   ← Which files were AI-generated vs human-authored
-├── 09_API_REFERENCE.md       ← API contracts and definitions
+├── 08_AI_ASSISTANCE_MAP.md     ← Which files were AI-generated vs human-authored
+├── 09_API_REFERENCE.md         ← API contracts and definitions
 ├── 10_OBSERVABILITY_STRATEGY.md ← L.M.T.A (Logs, Metrics, Traces, Alerts) framework
-├── AUDIT_SCORES.json         ← Structured audit history (appended after each audit)
+├── AUDIT_SCORES.json           ← Structured audit + verify history (appended after each run)
+├── pc2e/                       ← PC2E Mandatory Workspaces
+│   ├── SYSTEM_LOG.md           ← Audit trail
+│   ├── PORTS.md                ← Port ledger
+│   ├── Project_Context.md      ← High-level service map
+│   └── SECURITY_FRAMEWORK.md   ← Security standards
 └── charts/
-    ├── context.html          ← C1: system boundary + external actors
-    ├── containers.html       ← C2: deployable units + protocols
-    ├── erd.html              ← mandatory if relational DB
-    ├── dataflow.html         ← mandatory if sensitive/sovereign data
-    ├── deployment.html       ← mandatory if edge/hybrid/sovereign infra
-    ├── sequence_[flow].html  ← per user flow, max 15 interactions
-    └── state_[entity].html   ← per lifecycle entity
+    ├── context.html            ← C1: system boundary + external actors
+    ├── containers.html         ← C2: deployable units + protocols
+    ├── erd.html                ← mandatory if relational DB
+    ├── dataflow.html           ← mandatory if sensitive/sovereign data
+    ├── deployment.html         ← mandatory if edge/hybrid/sovereign infra
+    ├── sequence_[flow].html    ← per user flow, max 15 interactions
+    └── state_[entity].html     ← per lifecycle entity
 ```
 
 > `.ai-arch/` is gitignored by design. It is internal governance working documentation, not source code. **Note:** Because it is gitignored, `AUDIT_SCORES.json` only persists in your local environment. To share audit history across a team, you must explicitly commit it or export it to a persistent metrics store.
@@ -280,4 +316,4 @@ See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT -- see [LICENSE](LICENSE).
