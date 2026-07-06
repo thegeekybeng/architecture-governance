@@ -4,3 +4,9 @@
 # OS noise
 .DS_Store
 Thumbs.db
+
+.env.local
+.env
+.venv
+.env.example    
+.env.local.example
