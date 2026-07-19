@@ -1,0 +1,24 @@
+{
+  "name": "@thegeekybeng/architecture-governance",
+  "version": "1.0.0",
+  "description": "TOGAF-aligned AI-Native engineering governance and pre-push compliance checks.",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thegeekybeng/architecture-governance.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "keywords": [
+    "architecture-governance",
+    "ai-governance",
+    "compliance",
+    "togaf",
+    "pre-push-audit",
+    "devops",
+    "security-scanner"
+  ],
+  "author": "Andrew Yeo <andrew.yeo.mc@gmail.com> (https://github.com/thegeekybeng)",
+  "license": "MIT"
+}
