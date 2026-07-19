@@ -27,12 +27,12 @@ AI-generated code introduces unique risks that traditional tooling struggles to 
 
 ### How I Cover Technical Debt in this Repository
 
-As the lead architect, I establish strict governance boundaries to eliminate technical debt and ensure that AI-generated modules remain production-grade:
+As the lead architect, I establish strict governance boundaries to eliminate technical debt and ensure that AI-agent skills remain production-grade:
 
-- **Decoupled Standalone Packages:** I extracted the GFF core logic and compliance checks into separate, scoped, and publishable NPM packages (`@thegeekybeng/groundedfit-framework` and `@thegeekybeng/architecture-governance`). This prevents monorepo bloating and locks down single-responsibility boundaries.
-- **Zero-Trust Pre-Push Verification:** I designed a 6-pillar pre-push compliance gate script. If there is a single unpinned runtime engine version, conflicting package lockfiles, missing Dependabot settings, or active CVE vulnerabilities in our dependency tree, the git push is aborted automatically.
-- **PII-Sanitised Templating:** To protect developer privacy, I enforce template compilation. Standard configuration markdown files (e.g. Code of Conduct, Security Policy) must be compiled dynamically from templates using variables defined in `.env.example`, preventing personal names and developer emails from ever being committed to source files.
-- **TOGAF-Aligned Architecture Mapping:** I map all AI-driven enhancements to the TOGAF standard within `.ai-arch/`. By cataloging AI assistance mappings, complexity models, and ADRs with rejected alternatives, I eliminate "black box" code debt, ensuring that any developer can immediately understand and audit the framework.
+- **Modular Skill Architecture:** I organized the framework into standalone, scoped, and publishable NPM packages. This prevents monorepo bloating and locks down single-responsibility boundaries for each skill (e.g. `governance`, `ai-compliance-framework`, `vuln-scanner`, `taskmaster`).
+- **Structured Format Enforcement:** I mandate that all agent behaviors are codified strictly as deterministic `SKILL.md` rulesets. This ensures that agent instructions are version-controlled, auditable, and easily parsed by LLM engines.
+- **PII-Sanitised Skill Templating:** To protect developer privacy, I design templates for environment and maintainer configurations, ensuring that personal names and developer emails are never hardcoded inside the committed skills.
+- **Traceable Decision History:** Every change to the skills bundle is logged sequentially using ADRs with mandatory rejected alternatives, providing a clear record of why certain agent protocols were designed and structured.
 
 ## Install
 
