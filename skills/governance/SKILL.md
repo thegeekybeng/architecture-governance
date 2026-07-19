@@ -275,6 +275,48 @@ Check `10_OBSERVABILITY_STRATEGY.md` for L.M.T.A (Logs, Metrics, Traces, Alerts)
 
 `PASS`: LMTA defined | `PARTIAL`: Incomplete | `FAIL`: File missing or empty
 
+### Gate 7 — README Quality
+
+Check for the existence and completeness of the root `README.md` file.
+
+- **--fast mode**: Checks if `README.md` exists in the repository root.
+- **--deep mode**: Checks if `README.md` contains sections for:
+  - Prerequisites (e.g. Node.js/Docker versions).
+  - Package installation scripts (npm/pnpm/yarn/bun).
+  - Standard runtime execution commands (dev, build, start, test).
+  - Environment variables configuration details.
+
+`PASS`: Root README.md exists and contains all required sections | `PARTIAL`: Exists but missing key sections | `FAIL`: Root README.md missing or empty
+
+### Gate 8 — Version Management & Auto-Updates
+
+Check for automated package update configurations.
+
+- **--fast mode**: Checks if `.github/dependabot.yml` or `renovate.json` exists.
+- **--deep mode**: Verifies if dependencies are pinned (no loose `*` or wide ranges for critical libraries) and configured to receive auto-updates.
+
+`PASS`: Auto-update configurations present and configured | `PARTIAL`: Config exists but inactive or unpinned dependencies found | `FAIL`: No automated update configurations found
+
+### Gate 9 — Repository Community Standards
+
+Verify that standard repository community guidelines and issue templates exist.
+
+- **--fast mode**: Checks if `LICENSE`, `SECURITY.md`, `CODE_OF_CONDUCT.md`, `SUPPORT.md`, and `CONTRIBUTING.md` exist in the root folder.
+- **--deep mode**: Verifies that `.github/ISSUE_TEMPLATE/bug_report.md` and `feature_request.md` are present, configured with default assignees, and warn users against public vulnerability reports.
+
+`PASS`: All files and templates exist | `PARTIAL`: Standard files exist but templates missing | `FAIL`: Any core file (LICENSE/SECURITY) is missing
+
+### Gate 10 — PII Compliance & Sanitisation
+
+Ensure that personal developer data is not hardcoded inside committed repository files.
+
+- **--fast mode**: Scans files (README, Security, Code of Conduct) for hardcoded email/username patterns.
+- **--deep mode**: Verifies that:
+  - Maintainer contact details are dynamically populated from `.env` variables (`MAINTAINER_NAME`, `MAINTAINER_EMAIL`, `MAINTAINER_GITHUB`).
+  - Codebase uses a template compiler (`compileTemplates.ts`) to generate final markdown files from clean template sources (`templates/community/*.template`).
+
+`PASS`: PII compliant and templated | `PARTIAL`: No hardcoded details found but lacks template compilation | `FAIL`: Hardcoded personal credentials or emails found in committed files
+
 ### Delta from AUDIT_SCORES.json
 
 If `AUDIT_SCORES.json` exists in `.ai-arch/`: read the last verify run and show which gates changed status since then. No delta if no history.
@@ -296,8 +338,12 @@ If `AUDIT_SCORES.json` exists in `.ai-arch/`: read the last verify run and show 
 | AI governance | ❌ FAIL | AI component found; no governance framework documented in checklist |
 | NFR completeness | ✅ PASS | Performance, Security, Retention confirmed |
 | Observability | ✅ PASS | LMTA Strategy defined |
+| README Quality | ✅ PASS | Root README.md present with prerequisites |
+| Version Management | ❌ FAIL | dependabot.yml and renovate.json missing |
+| Community Standards | ✅ PASS | LICENSE, SECURITY, and CODE_OF_CONDUCT present |
+| PII Compliance | ✅ PASS | All credentials dynamically templated from env |
 
-**Score:** 4.5/6  **Status:** PARTIALLY COMPLIANT
+**Score:** 7.5/10  **Status:** PARTIALLY COMPLIANT
 
 ## Findings
 
@@ -323,8 +369,8 @@ After each verify run, append to `AUDIT_SCORES.json`:
 {
   "date": "YYYY-MM-DD",
   "mode": "--fast",
-  "gates": {"presence": "PASS", "adr_quality": "PARTIAL", "data_class": "PASS", "ai_governance": "FAIL", "nfr": "PASS", "observability": "PASS"},
-  "score": 4.5
+  "gates": {"presence": "PASS", "adr_quality": "PARTIAL", "data_class": "PASS", "ai_governance": "FAIL", "nfr": "PASS", "observability": "PASS", "readme_quality": "PASS", "version_mgmt": "FAIL", "community_standards": "PASS", "pii_compliance": "PASS"},
+  "score": 7.5
 }
 ```
 
@@ -465,14 +511,19 @@ Execute all six in order. Severity levels: `CRITICAL`, `HIGH`, `MEDIUM`, `LOW`, 
 - Insecure file operations (path traversal, unrestricted uploads)
 - Missing input validation on API boundaries
 - Docker security (running as root, mounting docker.sock, privileged mode)
+- GitHub Actions security:
+  - Non-SHA pinned actions (CWE-1395: using tag-based actions instead of SHA hashes).
+  - Excessive default permissions for GITHUB_TOKEN (e.g. missing `permissions: read-all` or explicit minimal scopes in workflow configs).
+  - Raw secret exposure (CWE-798: writing secrets directly into run steps/logs).
+  - Workflow command injection (CWE-94: evaluating untrusted variables like `github.event.issue.title` inside shell scripts without escaping/passing via env variables).
 
 **Every security finding MUST cite:**
 
 ```text
 - **CWE:** CWE-[ID] ([name])
 - **OWASP:** A[NN]:2025 ([category name])
+```
 
-```text
 If no CWE/OWASP mapping: downgrade to `INFO`. Do not fabricate mappings.
 
 **Reference table (embed, do not hallucinate IDs):**
@@ -491,6 +542,9 @@ If no CWE/OWASP mapping: downgrade to `INFO`. Do not fabricate mappings.
 | Overly permissive CORS   | CWE-942  | A02: Security Misconfiguration            |
 | Missing input validation | CWE-20   | A05: Injection                            |
 | Privileged container     | CWE-250  | A02: Security Misconfiguration            |
+| Uses tag-based action    | CWE-1395 | A03: Software Supply Chain Failures       |
+| GITHUB_TOKEN write access| CWE-250  | A02: Security Misconfiguration            |
+| Workflow command injection| CWE-94   | A05: Injection                            |
 
 **AI Component Detection (sub-check within Pillar 2):**
 
@@ -515,7 +569,7 @@ Document the chosen framework in .ai-arch/03_PRE_PROJECT_CHECKLIST.md Risk Regis
 
 If a documented governance framework is already referenced/applied: downgrade to `INFO — AI governance present`.
 
-**Tools:** `grep_search`, `run_command` for `npm audit`, `docker inspect`.
+**Tools:** `grep_search`, `run_command` for `npm audit`, `docker inspect`, `view_file` for workflow yaml configurations.
 
 ---
 
@@ -525,7 +579,7 @@ If a documented governance framework is already referenced/applied: downgrade to
 
 - Missing or broken Dockerfile / docker-compose.yml
 - Missing health check endpoints
-- Missing or incomplete CI/CD configuration
+- Missing or incomplete CI/CD configuration (e.g. GitHub Actions workflows)
 - Environment-specific hardcoding (localhost URLs, hardcoded ports in app code)
 - Missing `.env.example` or undocumented environment variables
 - Build reproducibility (pinned versions, lockfile present)
@@ -535,8 +589,13 @@ If a documented governance framework is already referenced/applied: downgrade to
 - Unnecessary dev dependencies in production image
 - Missing resource limits in container config
 - Rollback strategy documentation
+- Mismatched or conflicting lockfiles (e.g. both `package-lock.json` and `pnpm-lock.yaml` in the same directory, causing deployment non-determinism).
+- Out-of-sync lockfile (lockfile modified date older than package.json, or dependency mismatches).
+- Mismatch between package manager commands in scripts (e.g. calling `npm run` when the codebase uses `pnpm`).
+- Missing runtime configuration details or unpinned Node.js/Bun/Deno runtime engines block in `package.json`.
+- Missing automated dependency update configuration (e.g. `.github/dependabot.yml` or `renovate.json`).
 
-**Tools:** `view_file` for Dockerfiles, compose files, CI configs. `grep_search` for hardcoded URLs/localhost. `list_dir` to verify expected files.
+**Tools:** `view_file` for Dockerfiles, compose files, CI configs, package.json, and lockfiles. `grep_search` for hardcoded URLs/localhost and dependency manager commands. `list_dir` to verify expected files and detect duplicate lockfiles.
 
 ---
 
