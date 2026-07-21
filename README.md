@@ -21,7 +21,7 @@ This skill bundle enforces the gate before the first line of code, verifies it d
 AI-generated code introduces unique risks that traditional tooling struggles to catch. This framework grounds your AI operations in recognized, industry-standard practices:
 
 - **Architecture Governance:** Mapped to TOGAF ADM to ensure decisions are deliberate and traceable.
-- **AI Risk Management:** Aligns with the NIST AI RMF, EU AI Act, and Singapore's Model AI Governance Framework for transparent, accountable AI behaviour.
+- **AI Risk Management:** Aligns with the NIST AI RMF, EU AI Act, and Singapore's Model AI Governance Framework (including Agentic AI and Generative AI guidelines) for transparent, accountable AI behaviour.
 - **Security & Quality:** Findings are cited directly against the OWASP Top 10:2025 and CWE taxonomy to avoid vague "code smell" feedback.
 - **Sector Compliance:** Supports specialized standards like MAS FEAT (Finance) and IEC 61511/61508 (Oil & Gas / functional safety) to prevent regulatory blind spots.
 
@@ -196,7 +196,7 @@ Three modes. Covers 14 frameworks and jurisdictions across 9 sectors.
 | `compare` | "compare frameworks", "LangGraph vs CrewAI"   | Compliance matrix across agent architectures       |
 | `handoff` | "policy handoff", "multi-national compliance" | Jurisdiction-switching protocol + conflict matrix  |
 
-**Frameworks & jurisdictions (14):** EU AI Act · Singapore (Model AI Governance Framework + Model AI Governance Framework for Agentic AI, 2026) · NIST AI RMF · UK · China · Australia · Japan · South Korea · Canada · India · Brazil · ASEAN · ISO 42001 · OECD
+**Frameworks & jurisdictions (14):** EU AI Act · Singapore (Model AI Governance Framework, Agentic AI Framework, & GenAI Guidelines, 2026) · NIST AI RMF · UK · China · Australia · Japan · South Korea · Canada · India · Brazil · ASEAN · ISO 42001 · OECD
 
 > Note: ISO 42001 is an international management-system standard and OECD provides intergovernmental principles; both are governance references rather than national jurisdictions, and are included in the count of 14.
 
@@ -317,6 +317,7 @@ This bundle references and implements principles from the following official sou
 - **EU AI Act:** <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32024R1689>
 - **Singapore Model AI Governance Framework:** <https://www.pdpc.gov.sg/Help-and-Resources/2020/01/Model-AI-Governance-Framework>
 - **Singapore Model AI Governance Framework for Agentic AI (IMDA, 2026):** <https://www.imda.gov.sg/resources/press-releases-factsheets-and-speeches/press-releases/2026/new-model-ai-governance-framework-for-agentic-ai>
+- **Singapore PDPC Advisory Guidelines on the Use of Personal Data in Generative AI (PDPC, July 2026):** <https://www.go.gov.sg/ag-gen-ai>
 - **MAS FEAT Principles:** <https://www.mas.gov.sg/publications/monographs-or-information-paper/2018/feat>
 
 ## Contributing

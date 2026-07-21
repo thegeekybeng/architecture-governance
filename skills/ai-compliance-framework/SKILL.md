@@ -1,10 +1,15 @@
 ---
 name: governance-encoded
 description: >
-  Use when mapping AI regulations to technical implementation directives, comparing
-  agent frameworks against compliance requirements, or building jurisdiction-switching
-  protocols for multi-national AI. Triggers: "AI compliance check", "compliance
-  mapping", "compare frameworks", "policy handoff", "check AI regulations for <country>".
+  Apply AI governance guidelines from different regions, countries, and sectors to any AI implementation.
+  Three operational modes: (1) Compliance Mapping — translate governance principles into technical
+  directives per sector, (2) Framework Architecture — compare agent architectures against compliance
+  requirements, (3) Policy Handoff — generate jurisdiction-switching protocols for multi-national
+  operations. Covers EU AI Act, Singapore AIGF (incl. Agentic AI Framework & GenAI Guidelines 2026), US NIST AI RMF, UK, China,
+  Australia, Japan, South Korea, Canada, ASEAN, ISO 42001, OECD. Sector overlays: Government,
+  Healthcare (NAI Council), Finance (MAS), Critical Infrastructure.
+  Trigger with: "apply AI guidelines", "AI compliance check", "compliance mapping",
+  "compare frameworks", "policy handoff", "check AI regulations for <country>".
 ---
 
 # Governance Encoded
@@ -38,7 +43,7 @@ Determine from the user (or ask):
 | Code | Jurisdiction | Key Framework | Binding? |
 | ------ | ------------- | --------------- | ---------- |
 | `EU` | European Union | EU AI Act (2024/1689) | YES — phased 2024–2027 |
-| `SG` | Singapore | Model AIGF 2nd Ed + AI Verify + Agentic AI Framework | Voluntary (PDPA is binding) |
+| `SG` | Singapore | Model AIGF 2nd Ed + AI Verify + Agentic AI (WEF 2026) + GenAI Guidelines (July 2026) | Voluntary (PDPA is binding) |
 | `US` | United States | NIST AI RMF 1.0 | Voluntary (EO 14110 rescinded Jan 2025) |
 | `UK` | United Kingdom | Pro-Innovation Regulation (5 principles) | Sectoral — regulators enforce |
 | `CN` | China | Generative AI Measures + Algorithm Provisions | YES |
@@ -254,7 +259,7 @@ Where jurisdiction A has a requirement but B has no equivalent.
 
 | Dimension | Requirement | EU | SG | US | Conflict Type |
 | ----------- | ------------ | ---- | ---- | ---- | ---- |
-| AI Disclosure | Must inform user of AI interaction | Art. 50 (mandatory) | AIGF §4 (recommended) | No federal requirement | Escalation — apply EU |
+| AI Disclosure | Must inform user of AI interaction | Art. 50 (mandatory) | AIGF & GenAI Guidelines (recommended Chatbot Info Card) | No federal requirement | Escalation — apply EU |
 | Content Filtering | Must filter "harmful" content | Limited (illegal content) | PDPA consent | 1st Amendment protections | Conflict — different definitions |
 | Data Residency | Data must stay in jurisdiction | GDPR Ch. V (adequacy) | PDPA §26 (consent/contract) | No federal requirement | Gap — apply strictest |
 | Right to Explanation | Must explain AI decisions | Art. 86 (affected persons, high-risk) | AIGF §4 (recommended) | No federal requirement | Escalation — apply EU |
