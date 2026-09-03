@@ -236,6 +236,7 @@ Enforces rigid AI behavioural rules: no conversational filler, mandatory up-fron
 - Forces the agent to cite sources and provide confidence scoring (HIGH / MEDIUM / LOW).
 - Ensures alternative solutions are proposed before implementation, not as an afterthought.
 - Requires the agent to consult `.ai-arch/` documents before proposing any fix or feature.
+- Monitors context window usage and enforces Context Health status block reporting with clear numeric details (transcript file size in KB and estimated tokens).
 
 ---
 

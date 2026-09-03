@@ -813,7 +813,19 @@ Perform a comprehensive scrubbing of Personally Identifiable Information (PII) a
 - Replace personal emails with generic `admin@example.com` placeholders.
 - Replace personal domains with generic `example.com` routing.
 
-### Step 3 — Gitignore Enforcement
+### Step 3 — Container & Configuration Parameterization
+
+**Check for:**
+
+- Hardcoded host URLs, database connection strings, or system ports inside `docker-compose.yml`, `Dockerfile`, or server settings files.
+
+**Action:**
+
+- Replace raw connection values and parameters with environment variables.
+- In container orchestrations (e.g., `docker-compose.yml`), use variable fallback template syntax: `${VARIABLE:-default_sanitized_placeholder}`.
+- Target generic local default fallbacks (like `localhost`, `127.0.0.1`, `postgres`) for the committed configurations.
+
+### Step 4 — Gitignore Enforcement
 
 Ensure the `.gitignore` explicitly prevents the commitment of:
 
