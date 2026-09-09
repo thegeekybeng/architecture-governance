@@ -1,11 +1,12 @@
 ---
 name: governance
 description: >
-  Use when starting a project and needing architecture documentation, logging a
-  significant technical decision, checking which governance gates are missing or
-  incomplete, drawing architecture diagrams, or auditing code for security and
-  tech debt, or sanitizing PII and internal network topologies. Triggers: "set up the project", "write an ADR", "verify compliance",
-  "draw [diagram type]", "audit this", "audit <path>", "sanitize PII".
+  Use when starting a project and needing architecture documentation, logging an
+  architecture decision (ADR) or tech decision (TDR), maintaining the trade-off matrix,
+  checking which governance gates are missing or incomplete, drawing architecture diagrams,
+  auditing code for security and tech debt, or sanitizing PII and internal network topologies.
+  Triggers: "set up the project", "write an ADR", "write a TDR", "record tech decision",
+  "verify compliance", "draw [diagram type]", "audit this", "audit <path>", "sanitize PII".
 ---
 
 # Governance — Master Skill
@@ -15,7 +16,8 @@ description: >
 | Mode       | Class                          | What it means                                                       |
 | ---------- | ------------------------------ | ------------------------------------------------------------------- |
 | `verify`   | DETERMINISTIC                  | File existence + pattern checks. Same input → same output.          |
-| `adr`      | DETERMINISTIC                  | Format enforcement. Structural rules, not opinions.                 |
+| `adr`      | DETERMINISTIC                  | Format enforcement. Architecture invariants, topology, structural.  |
+| `tdr`      | DETERMINISTIC                  | Rule 8 format enforcement. Technology/package selection & exit path.|
 | `scaffold` | GROUNDED                       | TOGAF-mapped structure. Sources cited with edition and date.        |
 | `diagram`  | MODEL-JUDGMENT                 | Content is model-assessed; mandatory conditions are rule-enforced.  |
 | `audit`    | MODEL-JUDGMENT + GROUNDED      | Findings require interpretation; CWE/OWASP citations are grounded.  |
@@ -29,16 +31,17 @@ description: >
 
 ## Mode Selection
 
-| Mode       | Trigger Phrases                                                                                                                             |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| `scaffold` | "set up the project", "init .ai-arch", "initialize governance", "scaffold architecture", "start from scratch", "do this from scratch"       |
-| `adr`      | "log this decision", "write an ADR", "record this decision", any explicit framework/DB/auth/deployment/API choice                           |
-| `verify`   | "verify compliance", "check governance", "check gates", "audit .ai-arch", "verify .ai-arch", "governance check", "check compliance"         |
-| `diagram`  | "draw [diagram type]", "draw context", "draw ERD", "draw deployment", "draw sequence for", "draw data flow", "draw state", "draw container" |
-| `audit`    | "audit this", "audit [path]", "run dev audit", "check code quality", "audit for tech debt", "security audit"                                |
-| `sanitize` | "sanitize PII", "scrub the repo", "obfuscate internal IPs", "clean up personal data", "abstract hardware"                                   |
+| Mode       | Trigger Phrases                                                                                                                               |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `scaffold` | "set up the project", "init .ai-arch", "initialize governance", "scaffold architecture", "start from scratch", "do this from scratch"         |
+| `adr`      | "log architecture decision", "write an ADR", "record architecture choice", structural topology/tier/auth/boundary decision                    |
+| `tdr`      | "log tech decision", "write a TDR", "record technology choice", "add new dependency", "add library", "choose package", framework selection    |
+| `verify`   | "verify compliance", "check governance", "check gates", "audit .ai-arch", "verify .ai-arch", "governance check", "check compliance"           |
+| `diagram`  | "draw [diagram type]", "draw context", "draw ERD", "draw deployment", "draw sequence for", "draw data flow", "draw state", "draw container"   |
+| `audit`    | "audit this", "audit [path]", "run dev audit", "check code quality", "audit for tech debt", "security audit"                                  |
+| `sanitize` | "sanitize PII", "scrub the repo", "obfuscate internal IPs", "clean up personal data", "abstract hardware"                                     |
 
-If mode is ambiguous, ask: "Which governance mode? scaffold / adr / verify / diagram / audit / sanitize"
+If mode is ambiguous, ask: "Which governance mode? scaffold / adr / tdr / verify / diagram / audit / sanitize"
 
 ---
 
@@ -119,7 +122,8 @@ Do NOT use Mermaid. Use HTML/CSS Grid and Flexbox to build a responsive, native 
 
 - **PRE_PROJECT_CHECKLIST.md**: Complete all 6 sections — Business Case, Stakeholder RACI, NFRs (minimum: performance, security, data retention), Data Classification, Risk Register, Assumptions.
 - **COMPLEXITY_ANALYSIS.md**: Traditional dev vs AI-augmented table, effort drivers, human judgment tasks.
-- **ARCHITECTURE_DECISIONS.md**: Create ADR-001 immediately (framework/stack choice vs alternatives).
+- **ARCHITECTURE_DECISIONS.md**: Initialize `## Architectural & Technical Trade-Off Matrix` table at the top with a baseline entry, and create ADR-001 immediately (framework/stack choice vs alternatives).
+- **pc2e/SYSTEM_LOG.md**: Initialize `## Technical Decision Records (TDR)` section template.
 - **01_README.md**: Include TOGAF ADM Deliverable Mapping (see table below).
 
 **TOGAF ADM Deliverable Mapping (embed in 01_README.md):**
@@ -162,12 +166,16 @@ Source: TOGAF® Standard, 10th Edition (Open Group, 2022). Confidence: HIGH.
 
 Write a new Architecture Decision Record.
 
-### When to write ADR
+### When to write ADR (vs TDR)
 
-- User chooses a framework, library, or tool
-- User chooses a deployment model, data storage, auth method, API design, AI model, caching strategy
-- User explicitly asks to log an architecture decision
-- A major design choice is made during implementation
+- **Use ADR for macro-architectural decisions**:
+  - System topology, deployment model, physical/virtual tier splits (e.g. edge vs remote compute node)
+  - Data storage paradigm (relational vs document vs graph), replication, and data sovereignty boundaries
+  - Authentication and authorization models (RBAC, JWT, session lifecycle, multi-tenant data isolation)
+  - Communication patterns and protocols (REST vs gRPC vs SSE vs WebSockets, synchronous vs message queues)
+  - Boundary contracts, structural seams, and major architectural refactorings
+- User explicitly asks to "log an architecture decision" or "write an ADR".
+- *Do not use ADR for specific packages, libraries, or tool additions — use `tdr` mode instead.*
 
 ### ADR Format (strict)
 
@@ -175,29 +183,130 @@ Write a new Architecture Decision Record.
 ## ADR-XXX — [Decision Title] ([DATE YYYY-MM-DD])
 
 **Context:**
-[2-4 sentences. What was the situation? What were we trying to achieve?]
+[2-4 sentences. What was the situation? What architectural forces, constraints, or security vectors were active?]
 
-**Decision:** [One clear sentence stating what was chosen.]
+**Decision:** [One clear sentence stating what architectural approach or structure was chosen.]
 
 **Consequences (+):**
-- [Positive outcome 1]
-- [Positive outcome 2]
+- [Positive architectural outcome or capability gained 1]
+- [Positive architectural outcome or capability gained 2]
 
 **Consequences (−):**
-- [Negative outcome or trade-off 1]
-- [Negative outcome or trade-off 2]
+- [Negative outcome, architectural debt, or operational trade-off 1]
+- [Negative outcome, architectural debt, or operational trade-off 2]
 
-**Rejected alternatives:** [Alternative A] ([why rejected]); [Alternative B] ([why rejected]).
+**Rejected alternatives:** [Alternative A] ([why rejected with technical rationale]); [Alternative B] ([why rejected with technical rationale]).
 ```
 
 ### ADR Rules
 
-1. **Rejected alternatives are mandatory.** Minimum 2 per ADR. A decision without alternatives did not consider the trade-space.
-2. **ADRs are never edited.** If reversed, write a new ADR and mark the old one `[SUPERSEDED by ADR-XXX]`.
-3. **Number sequentially.** Read existing ARCHITECTURE_DECISIONS.md to determine the next number.
-4. **Date it.** When the decision was made, not documented.
-5. **Consequences must be honest.** List real negatives. An ADR with only positives was written by a salesperson.
-6. Append to the bottom of 07_ARCHITECTURE_DECISIONS.md. Also update 08_AI_ASSISTANCE_MAP.md.
+1. **Rejected alternatives are mandatory.** Minimum 2 per ADR with explicit technical rejection reasons. A decision without alternatives is an unvalidated assumption.
+2. **ADRs are never edited.** If reversed or revised, write a new sequential ADR and mark the old one `[SUPERSEDED by ADR-XXX]`.
+3. **Number sequentially.** Read existing `07_ARCHITECTURE_DECISIONS.md` to determine the next number (e.g. ADR-001, ADR-002).
+4. **Date it accurately.** Date when the decision was agreed upon (YYYY-MM-DD), not documented.
+5. **Consequences must be honest.** List real operational and architectural negatives. An ADR with only positives is ungrounded.
+6. **Mandatory Trade-Off Matrix Update:** When appending an ADR to `07_ARCHITECTURE_DECISIONS.md`, the agent MUST immediately append or update the corresponding row in the `## Architectural & Technical Trade-Off Matrix` at the top of `07_ARCHITECTURE_DECISIONS.md`. Also update `08_AI_ASSISTANCE_MAP.md`.
+
+---
+
+---
+
+## MODE: `tdr`
+
+Write a new Technical Decision Record adhering to Global Rule 8.
+
+### When to write TDR (vs ADR)
+
+- **Use TDR for technology, package, library, and runtime choices**:
+  - Introducing any new dependency, framework, npm/pip package, or external tool to a project (Rule 8)
+  - Selecting between competing libraries (e.g., Next.js 15 vs Next.js 16, Prisma vs Drizzle, Pino vs Winston, sessionStorage vs localStorage)
+  - Concrete runtime utilities, compilation scripts, or CI gate verification helpers (e.g., custom Node audit script vs audit-ci)
+  - Choosing specific runtime engines, container base images, or database client drivers
+- User asks to "write a TDR", "record tech decision", "log technology choice", or when introducing a dependency.
+
+### TDR Format (strict adhering to Global Rule 8)
+
+```markdown
+### TDR-XX: [Technology / Package / Tool Title]
+
+* **Status**: Approved & Implemented ([DATE YYYY-MM-DD])
+* **Context**: [2-4 sentences explaining why this technology/tool was needed, the technical gap, or security requirement]
+* **Proposed Solution**: [Clear explanation of what the technology does and why this choice over alternatives]
+* **Trade-offs & Known Limitations**:
+  * [Trade-off or limitation 1]
+  * [Trade-off or limitation 2]
+* **Alternatives Considered**:
+  1. *[Alternative A]*: [Why rejected - concrete technical rationale]
+  2. *[Alternative B]*: [Why rejected - concrete technical rationale]
+* **Decision**: [Clear concluding rationale for this specific technology]
+* **Migration Path**: [Clear exit/migration path if the technology becomes unmaintained, deprecated, or needs upgrading]
+```
+
+### TDR Rules
+
+1. **Mandatory 4 Core Fields (Rule 8):**
+   - What it does and why this choice over alternatives
+   - Trade-offs and known limitations
+   - At least 2 alternatives considered with explicit technical rejection reasons
+   - Migration path if it becomes unmaintained, deprecated, or needs major version migration
+2. **Storage Target:** Append to `SYSTEM_LOG.md` (or `.ai-arch/pc2e/SYSTEM_LOG.md` or a project `docs/decisions/` directory as specified by Rule 8).
+3. **Number sequentially:** Read existing `SYSTEM_LOG.md` to determine the next number (e.g., TDR-01, TDR-02).
+4. **Mandatory Trade-Off Matrix Update:** When logging a TDR, the agent MUST immediately append or update the corresponding row in the `## Architectural & Technical Trade-Off Matrix` located at the top of `.ai-arch/07_ARCHITECTURE_DECISIONS.md`.
+5. **No undocumented packages:** Never install or commit a new package or framework without a matching TDR.
+
+---
+
+---
+
+## Architectural & Technical Trade-Off Matrix
+
+Every project maintaining `.ai-arch/` MUST maintain a consolidated **Architectural & Technical Trade-Off Matrix** at the top of `07_ARCHITECTURE_DECISIONS.md`.
+
+### Matrix Purpose
+
+To provide a scannable, cross-cutting index of all deliberate trade-offs across architecture (ADRs) and technologies (TDRs), ensuring that engineering teams and AI agents immediately understand the costs accepted, compensatory controls applied, and review triggers for every major choice.
+
+### 7-Column Standard Schema
+
+```markdown
+## Architectural & Technical Trade-Off Matrix
+
+| ID | Decision / Component | Category / Dimension | Benefit Gained (+) | Cost / Trade-off Incurred (−) | Compensating Control / Mitigation | Review / Revisit Trigger |
+|---|---|---|---|---|---|---|
+| ADR-001 | 3-Tier Edge vs Compute Split | Hardware & Memory | Recovers 8GB+ RAM on primary edge node | Network latency & distributed complexity | Encrypted mesh VPN, automated proxy routing | Edge node hardware upgrade |
+| TDR-04 | Next.js 15 Framework Upgrade | Framework & Supply Chain | Resolves critical CVEs within 512MB RAM ceiling | Requires async route parameters | Async parameter handler pattern & backport LTS | Edge container build memory limit increased |
+```
+
+### Column Definitions
+
+- **ID**: `ADR-XXX` or `TDR-XX`. If superseded, append `[SUPERSEDED by ADR-YYY]`.
+- **Decision / Component**: Short name of the decision, subsystem, seam, or technology.
+- **Category / Dimension**: Non-functional attribute impacted (e.g. Memory & Hardware, Security & ACE, Storage & PDPA, Multi-Tenancy & Isolation, Framework & Supply Chain, Observability, Latency).
+- **Benefit Gained (+)**: Primary positive outcome, capability unlocked, or risk mitigated.
+- **Cost / Trade-off Incurred (−)**: Operational cost, technical debt, or limitation accepted.
+- **Compensating Control / Mitigation**: Active mechanism implemented to safeguard against the accepted cost.
+- **Review / Revisit Trigger**: Measurable threshold or event when the decision should be revisited.
+
+### Maintenance & Synchronization Rules
+
+1. **Synchronous Append:** Whenever an ADR or TDR is created, its trade-off row MUST be appended to the matrix during the same edit.
+2. **Immutability with Supersession:** Historical rows are never deleted; if a decision is superseded, append `[SUPERSEDED by ADR-YYY]` to the ID and annotate the review trigger.
+3. **Completeness:** Gate 2 verification validates that every active ADR and TDR has a corresponding row in the matrix.
+
+---
+
+---
+
+## Synergy with `/improve-codebase-architecture`
+
+When using `/improve-codebase-architecture` to explore deepening opportunities, identify shallow modules, or create seams:
+
+1. **Deepened Seam / Module Extraction**:
+   - If an architectural refactor consolidates shallow modules behind a deep interface, creates a seam, or modifies service boundaries, dispatch `/governance adr` to log the structural pattern and update the Trade-Off Matrix.
+2. **New Utility / Package Adoption**:
+   - If refactoring requires importing an external package, parser, or library, dispatch `/governance tdr` adhering to Rule 8 (What/Why, Trade-offs, 2 Alternatives, Migration Path) and update the Trade-Off Matrix.
+3. **Rejection Persistence**:
+   - If the user rejects an architectural candidate with a load-bearing architectural reason during the grilling loop, record an ADR documenting the rejection and alternatives so future architecture reviews do not re-suggest it.
 
 ---
 
@@ -220,15 +329,30 @@ Required files: `01_README.md`, `02_PROJECT_CONTEXT.md`, `03_PRE_PROJECT_CHECKLI
 
 `PASS`: all 10 present | `PARTIAL`: some missing | `FAIL`: .ai-arch/ absent
 
-### Gate 2 — ADR quality
+### Gate 2 — ADR, TDR & Trade-Off Matrix Quality
 
-For each ADR in `07_ARCHITECTURE_DECISIONS.md`:
+Deterministic checks across architectural decisions, technical decisions, and the consolidated trade-off matrix:
 
-- `PASS`: contains `**Rejected alternatives:**` with visible text after it
-- `INCOMPLETE`: pattern found but empty or just a dash
-- `MISSING`: no ADRs present at all
+1. **ADR Check (`07_ARCHITECTURE_DECISIONS.md`):**
+   - `PASS`: Every ADR contains `**Rejected alternatives:**` with visible text and minimum 2 alternatives.
+   - `INCOMPLETE`: Pattern found but empty, just a dash, or fewer than 2 alternatives.
+   - `MISSING`: No ADRs present at all.
 
-Report: N of M ADRs are compliant.
+2. **TDR Check (`SYSTEM_LOG.md` or `pc2e/SYSTEM_LOG.md` or `docs/decisions/`):**
+   - `PASS`: Every TDR contains all 4 mandatory Global Rule 8 elements:
+     - What it does and why this choice over alternatives
+     - Trade-offs and known limitations
+     - At least 2 alternatives considered with technical rejection reasons
+     - Migration path if unmaintained or deprecated
+   - `INCOMPLETE`: One or more mandatory Rule 8 fields missing.
+   - `MISSING`: Dependencies or packages added to project without recorded TDRs.
+
+3. **Trade-Off Matrix Check (`07_ARCHITECTURE_DECISIONS.md`):**
+   - `PASS`: `## Architectural & Technical Trade-Off Matrix` table exists with all 7 columns, and every active ADR and TDR has a corresponding mapped row.
+   - `PARTIAL`: Matrix table exists but some ADRs or TDRs are missing mapped rows.
+   - `FAIL`: Matrix table missing or empty.
+
+Report: N of M ADRs compliant, X of Y TDRs compliant, Trade-Off Matrix synchronized (Z entries mapped).
 
 ### Gate 3 — Data classification consistency
 
@@ -528,23 +652,23 @@ If no CWE/OWASP mapping: downgrade to `INFO`. Do not fabricate mappings.
 
 **Reference table (embed, do not hallucinate IDs):**
 
-| Issue                    | CWE      | OWASP 2025                                |
-| ------------------------ | -------- | ----------------------------------------- |
-| Hardcoded credentials    | CWE-798  | A07: Authentication Failures              |
-| SQL injection            | CWE-89   | A05: Injection                            |
-| XSS                      | CWE-79   | A05: Injection                            |
-| CSRF                     | CWE-352  | A01: Broken Access Control                |
-| Path traversal           | CWE-22   | A01: Broken Access Control                |
-| Missing rate limiting    | CWE-770  | A06: Insecure Design                      |
-| Missing auth on route    | CWE-306  | A07: Authentication Failures              |
-| Insecure dependency      | CWE-1395 | A03: Software Supply Chain Failures       |
-| PII in logs              | CWE-532  | A09: Security Logging & Alerting Failures |
-| Overly permissive CORS   | CWE-942  | A02: Security Misconfiguration            |
-| Missing input validation | CWE-20   | A05: Injection                            |
-| Privileged container     | CWE-250  | A02: Security Misconfiguration            |
-| Uses tag-based action    | CWE-1395 | A03: Software Supply Chain Failures       |
-| GITHUB_TOKEN write access| CWE-250  | A02: Security Misconfiguration            |
-| Workflow command injection| CWE-94   | A05: Injection                            |
+| Issue                      | CWE      | OWASP 2025                                |
+| -------------------------- | -------- | ----------------------------------------- |
+| Hardcoded credentials      | CWE-798  | A07: Authentication Failures              |
+| SQL injection              | CWE-89   | A05: Injection                            |
+| XSS                        | CWE-79   | A05: Injection                            |
+| CSRF                       | CWE-352  | A01: Broken Access Control                |
+| Path traversal             | CWE-22   | A01: Broken Access Control                |
+| Missing rate limiting      | CWE-770  | A06: Insecure Design                      |
+| Missing auth on route      | CWE-306  | A07: Authentication Failures              |
+| Insecure dependency        | CWE-1395 | A03: Software Supply Chain Failures       |
+| PII in logs                | CWE-532  | A09: Security Logging & Alerting Failures |
+| Overly permissive CORS     | CWE-942  | A02: Security Misconfiguration            |
+| Missing input validation   | CWE-20   | A05: Injection                            |
+| Privileged container       | CWE-250  | A02: Security Misconfiguration            |
+| Uses tag-based action      | CWE-1395 | A03: Software Supply Chain Failures       |
+| GITHUB_TOKEN write access  | CWE-250  | A02: Security Misconfiguration            |
+| Workflow command injection | CWE-94   | A05: Injection                            |
 
 **AI Component Detection (sub-check within Pillar 2):**
 
@@ -848,8 +972,9 @@ Ensure the `.gitignore` explicitly prevents the commitment of:
 1. **Read before judging.** Open every file you reference. No guessing at contents. (Anti-Hallucination)
 2. **Cite with confidence.** Every external claim references a specific source. HIGH = verified. MEDIUM = inferred. LOW = speculative.
 3. **No placeholder text.** Every generated file is fully populated from context.
-4. **ADRs require rejected alternatives.** A decision without alternatives is a guess.
-5. **Score formula is version-controlled.** Formula version 1.1. If formula changes, bump version. Old scores remain comparable within their version.
-6. **AI components require governance.** Any AI component detected in audit or verify mode must have a documented governance framework. Surface the six minimum controls: anti-hallucination, prompt injection defence (structural fencing), context window bounding, phantom commitment prevention, mandatory audit logging, loop-breaking protocol.
-7. **Diagram mandatory conditions are enforced, not optional.** If relational DB → ERD required. If sensitive data → DATAFLOW required. If sovereign infra → DEPLOYMENT required.
-8. **AUDIT_SCORES.json is append-only.** Never overwrite history.
+4. **ADRs and TDRs require rejected alternatives.** A decision without alternatives is an unvalidated assumption. ADRs require min 2 rejected alternatives; TDRs require min 2 alternatives considered plus a migration path (Rule 8).
+5. **Trade-Off Matrix is systematically maintained.** Every ADR and TDR must be mapped into the 7-column Architectural & Technical Trade-Off Matrix at the top of `07_ARCHITECTURE_DECISIONS.md`.
+6. **Score formula is version-controlled.** Formula version 1.1. If formula changes, bump version. Old scores remain comparable within their version.
+7. **AI components require governance.** Any AI component detected in audit or verify mode must have a documented governance framework. Surface the six minimum controls: anti-hallucination, prompt injection defence (structural fencing), context window bounding, phantom commitment prevention, mandatory audit logging, loop-breaking protocol.
+8. **Diagram mandatory conditions are enforced, not optional.** If relational DB → ERD required. If sensitive data → DATAFLOW required. If sovereign infra → DEPLOYMENT required.
+9. **AUDIT_SCORES.json is append-only.** Never overwrite history.

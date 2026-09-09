@@ -3,6 +3,10 @@
   "version": "1.0.3",
   "description": "TOGAF-aligned AI-Native engineering governance and pre-push compliance checks.",
   "type": "module",
+  "scripts": {
+    "test": "node evals/eval-governance.js",
+    "eval": "node evals/eval-governance.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/thegeekybeng/architecture-governance.git"

@@ -4,9 +4,9 @@
 
 TOGAF-mapped documentation · Deterministic compliance verification · CWE/OWASP-cited code audits
 
-`skills 4` · `modes 10` · `agents Antigravity · Codex · Gemini CLI · Claude Code` · `license MIT`
+`skills 4` · `modes 11` · `agents Antigravity · Codex · Gemini CLI · Claude Code` · `license MIT`
 
-> **Note:** The "10 modes" total covers 6 in `governance`, 3 in `ai-compliance-framework`, and 1 in `vuln-scanner`. The `taskmaster` skill is a behavioural protocol, not a modal dispatch.
+> **Note:** The "11 modes" total covers 7 in `governance` (including distinct `adr`, `tdr`, and systematic trade-off table synchronization), 3 in `ai-compliance-framework`, and 1 in `vuln-scanner`. The `taskmaster` skill is a behavioural protocol, not a modal dispatch.
 
 This bundle is distributed as SKILL.md Agent Skills and runs on any agent that supports the format, including Claude Code. Verified working with the agents listed below.
 
@@ -73,31 +73,39 @@ npx skills remove
 
 ## `governance` -- Master lifecycle skill
 
-Six modes, one skill. Dispatch by trigger phrase.
+Seven modes, one skill. Dispatch by trigger phrase.
 
-| Mode       | Trigger                                   | Output                                                                          |
-| ---------- | ----------------------------------------- | ------------------------------------------------------------------------------- |
-| `scaffold` | "set up the project", "init .ai-arch/"    | `.ai-arch/` with 10 TOGAF-mapped files + `charts/` + `pc2e/`                    |
-| `adr`      | "write an ADR", any tech choice           | Appended ADR with mandatory rejected alternatives                               |
-| `verify`   | "verify compliance", "check governance"   | 6-gate report -- `--fast` (DETERMINISTIC, default) or `--deep` (MODEL-JUDGMENT) |
-| `diagram`  | "draw ERD", "draw context diagram", etc.  | HTML/CSS chart with PNG export in `.ai-arch/charts/`                            |
-| `audit`    | "audit this", "audit [path]"              | 6-pillar report with weighted score and CWE/OWASP citations                     |
-| `sanitize` | "sanitize PII", "prepare for open source" | 7-step privacy scrub + example file generation + verification sweep             |
+| Mode       | Trigger                                     | Output                                                                          |
+| ---------- | ------------------------------------------- | ------------------------------------------------------------------------------- |
+| `scaffold` | "set up the project", "init .ai-arch/"      | `.ai-arch/` with 10 TOGAF-mapped files + `charts/` + `pc2e/` + Trade-Off Matrix |
+| `adr`      | "write an ADR", "log architecture decision" | Appended ADR in `07_ARCHITECTURE_DECISIONS.md` + synchronized Trade-Off Matrix  |
+| `tdr`      | "write a TDR", "record tech decision"       | Appended TDR in `SYSTEM_LOG.md` (Rule 8) + synchronized Trade-Off Matrix        |
+| `verify`   | "verify compliance", "check governance"     | Gate report -- `--fast` (DETERMINISTIC, default) or `--deep` (MODEL-JUDGMENT)   |
+| `diagram`  | "draw ERD", "draw context diagram", etc.    | HTML/CSS chart with PNG export in `.ai-arch/charts/`                            |
+| `audit`    | "audit this", "audit [path]"                | 6-pillar report with weighted score and CWE/OWASP citations                     |
+| `sanitize` | "sanitize PII", "prepare for open source"   | 7-step privacy scrub + example file generation + verification sweep             |
 
-### `verify` mode -- 6 compliance gates
+### Architectural & Technical Trade-Off Matrix
+
+Embedded at the top of `.ai-arch/07_ARCHITECTURE_DECISIONS.md`, this 7-column matrix is systematically updated whenever an ADR, TDR, or codebase deepening refactor occurs:
+`| ID | Decision / Component | Category / Dimension | Benefit Gained (+) | Cost / Trade-off Incurred (−) | Compensating Control / Mitigation | Review / Revisit Trigger |`
+
+### `verify` mode -- compliance gates
 
 The verify mode runs deterministic checks (`--fast`, default) or adds model-assisted semantic checks (`--deep`).
 
-| Gate | What it checks                                                                              |
-| ---- | ------------------------------------------------------------------------------------------- |
-| 1    | `.ai-arch/` presence -- all 10 required files exist                                         |
-| 2    | ADR quality -- every ADR contains `**Rejected alternatives:**` with visible content         |
-| 3    | Data classification consistency -- required charts exist for sensitive data / relational DB |
-| 4    | AI component governance -- AI detected -> governance framework documented                   |
-| 5    | NFR completeness -- minimum 3 types: performance, security, data retention                  |
-| 6    | Observability readiness -- L.M.T.A (Logs, Metrics, Traces, Alerts) strategy defined         |
-
-Gate scoring: `PASS` = 1.0 · `PARTIAL` = 0.5 · `FAIL` = 0.0, summed across 6 gates.
+| Gate | What it checks                                                                                  |
+| ---- | ----------------------------------------------------------------------------------------------- |
+| 1    | `.ai-arch/` presence -- all 10 required files exist                                             |
+| 2    | ADR & TDR quality -- ADRs have min 2 rejected alternatives; TDRs meet Rule 8; Trade-Offs synced |
+| 3    | Data classification consistency -- required charts exist for sensitive data / relational DB     |
+| 4    | AI component governance -- AI detected -> governance framework documented                       |
+| 5    | NFR completeness -- minimum 3 types: performance, security, data retention                      |
+| 6    | Observability readiness -- L.M.T.A (Logs, Metrics, Traces, Alerts) strategy defined             |
+| 7    | Root README Quality -- Prerequisites, runtime commands, and setup instructions                  |
+| 8    | Version Management & Auto-Updates -- Dependabot or Renovate configuration present               |
+| 9    | Repository Community Standards -- LICENSE, SECURITY, and CODE_OF_CONDUCT present                |
+| 10   | PII Compliance & Sanitisation -- Developer credentials templated from environment               |
 
 **Example output:**
 
